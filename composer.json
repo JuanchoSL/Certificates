@@ -1,12 +1,21 @@
 {
-    "name": "juanchosl/library",
-    "description": "{}",
+    "name": "juanchosl/certificates",
+    "description": "Little tools collection in order to create and manage keys and certificates",
     "type": "library",
     "license": "MIT",
-    "homepage": "https://github.com/JuanchoSL/Library",
+    "homepage": "https://github.com/JuanchoSL/Certificates",
     "keywords": [
-        "log",
-        "debug"
+        "crypt",
+        "cryptology",
+        "openssl",
+        "KeyPair",
+        "Private key",
+        "Public key",
+        "Certificate",
+        "x509",
+        "pkcs12",
+        "pkcs7",
+        "openssh"
     ],
     "authors": [
         {
@@ -16,7 +25,9 @@
         }
     ],
     "require": {
-        "php": "^8.1"
+        "php": "^8.0",
+        "ext-openssl": "*",
+        "juanchosl/exceptions": "1.0.*"
     },
     "require-dev": {
         "phpunit/phpunit": "9.6.*",
@@ -24,12 +35,12 @@
     },
     "autoload": {
         "psr-4": {
-            "JuanchoSL\\Library\\": "src/"
+            "JuanchoSL\\Certificates\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JuanchoSL\\Library\\Tests\\": "tests/"
+            "JuanchoSL\\Certificates\\Tests\\": "tests/"
         }
     },
     "scripts": {

@@ -1,0 +1,16 @@
+<?php declare(strict_types=1);
+
+namespace JuanchoSL\Certificates\Enums;
+
+enum ContentTypesEnum: string
+{
+    case CONTENTTYPE_CERTIFICATE_REQUEST = 'CERTIFICATE REQUEST';
+    case CONTENTTYPE_CERTIFICATE = 'CERTIFICATE';
+    case CONTENTTYPE_PRIVATE_KEY_ENCRYPTED = 'ENCRYPTED PRIVATE KEY';
+    case CONTENTTYPE_PRIVATE_KEY = 'PRIVATE KEY';
+    case CONTENTTYPE_PUBLIC_KEY = 'PUBLIC KEY';
+    case CONTENTTYPE_PKCS7 = 'PKCS7';
+    case CONTENTTYPE_PKCS8 = 'PKCS8';
+    case CONTENTTYPE_CMS = 'CMS';
+
+}
