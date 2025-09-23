@@ -12,7 +12,7 @@ class Pkcs7Filler extends Pkcs7Container
 
     private $private;
 
-    public function __construct(PrivateKeyContainer $private)
+    public function __construct(#[\SensitiveParameter] PrivateKeyContainer $private)
     {
         $this->private = $private;
     }

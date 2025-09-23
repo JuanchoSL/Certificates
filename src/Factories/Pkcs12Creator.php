@@ -15,19 +15,19 @@ class Pkcs12Creator implements Stringable, SaveableInterface
 
     use SaveableTrait;
 
+    protected string $password;
     protected ?PrivateKeyContainer $private = null;
     protected ?CertificateContainer $certificate = null;
     protected ?ChainContainer $extracerts = null;
-    protected ?string $password = null;
     protected ?string $friendly_name = null;
 
-    public function __construct(string $friendly_name, string $password)
+    public function __construct(#[\SensitiveParameter] string $password, ?string $friendly_name = null)
     {
         $this->friendly_name = $friendly_name;
         $this->password = $password;
     }
 
-    public function setPrivateKey(PrivateKeyContainer $private): static
+    public function setPrivateKey(#[\SensitiveParameter] PrivateKeyContainer $private): static
     {
         $this->private = $private;
         return $this;
@@ -51,7 +51,7 @@ class Pkcs12Creator implements Stringable, SaveableInterface
     public function export(): mixed
     {
         if (empty($this->password)) {
-            throw new Exception("The Password bundle can not be empty");
+            throw new Exception("The bundle password can not be empty");
         }
         $extras = ['friendly_name' => $this->friendly_name];
         if (!empty($this->extracerts)) {
@@ -60,7 +60,7 @@ class Pkcs12Creator implements Stringable, SaveableInterface
         if (empty($this->certificate) or empty($this->private)) {
             throw new Exception("The Private Key and the user Certificate are required");
         }
-        if (!openssl_x509_check_private_key($this->certificate->__invoke(), $this->private->__invoke())) {
+        if (!$this->certificate->checkSubjectPrivateKey($this->private)) {
             throw new Exception("The Certificate is not valid for the Private key");
         }
         openssl_pkcs12_export((string) $this->certificate, $output, (string) $this->private, $this->password, $extras);

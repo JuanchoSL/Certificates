@@ -4,6 +4,7 @@ namespace JuanchoSL\Certificates\Repositories;
 
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
@@ -13,14 +14,20 @@ use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use Stringable;
 
-class PublicKeyContainer implements DetailableInterface, ExportableInterface, Stringable, SaveableInterface, StandarizableInterface
+class PublicKeyContainer implements
+    DetailableInterface,
+    ExportableInterface,
+    Stringable,
+    SaveableInterface,
+    StandarizableInterface,
+    FormateableInterface
 {
 
     use DetailableTrait, StringableTrait, SaveableTrait;
 
     protected $data = null;
 
-    public function __construct(OpenSSLAsymmetricKey|OpenSSLCertificate|string $cert_content)
+    public function __construct(#[\SensitiveParameter] OpenSSLAsymmetricKey|OpenSSLCertificate|string $cert_content)
     {
         if (is_string($cert_content) && is_file($cert_content) && file_exists($cert_content)) {
             $cert_content = file_get_contents($cert_content);
@@ -124,5 +131,15 @@ class PublicKeyContainer implements DetailableInterface, ExportableInterface, St
         }
 
         return pack("Na*", $len, $buffer);
+    }
+
+    public function getExtension(): string
+    {
+        return 'pub';
+    }
+
+    public function getMediaType(): string
+    {
+        return 'text/plain';
     }
 }

@@ -2,14 +2,19 @@
 
 namespace JuanchoSL\Certificates\Traits;
 
+use Exception;
+
 trait PasswordProtectableTrait
 {
 
     protected ?string $password = null;
 
-    public function setPassword(?string $password = null): static
+    public function setPassword(#[\SensitiveParameter] string $password): static
     {
-        $this->password = empty($password) ? null : $password;
+        if (empty($password)) {
+            throw new Exception("The password can not be empty");
+        }
+        $this->password = $password;
         return $this;
     }
 }

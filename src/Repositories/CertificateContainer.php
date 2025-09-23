@@ -10,6 +10,7 @@ use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
+use JuanchoSL\Certificates\Interfaces\VerifyableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
@@ -24,7 +25,8 @@ class CertificateContainer implements
     DetailableInterface,
     StandarizableInterface,
     FingerprintReadableInterface,
-    FormateableInterface
+    FormateableInterface,
+    VerifyableInterface
 {
 
     use DetailableTrait, StringableTrait, SaveableTrait;
@@ -82,5 +84,28 @@ class CertificateContainer implements
     public function getMediaType(): string
     {
         return 'application/x-x509-user-cert';
+    }
+
+    public function checkPurpose(int $purpose, bool $strict = false): bool
+    {
+        $result = openssl_x509_checkpurpose($this->data, $purpose);
+        return $result;
+    }
+
+    public function checkIssuerByPublicKey(PublicKeyContainer $public): bool
+    {
+        $result = openssl_x509_verify($this->data, $public());
+        if ($result < 0) {
+            throw new Exception(openssl_error_string());
+        }
+        return boolval($result);
+    }
+    public function checkSubjectPrivateKey(#[\SensitiveParameter] PrivateKeyContainer $private): bool
+    {
+        $result = openssl_x509_check_private_key($this->data, $private());
+        if ($result < 0) {
+            throw new Exception(openssl_error_string());
+        }
+        return boolval($result);
     }
 }

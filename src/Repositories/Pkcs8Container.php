@@ -59,12 +59,12 @@ class Pkcs8Container extends Pkcs7Container implements
         unset($sigfile);
     }
 
-    public function getPrivateKey(?string $password = null): PrivateKeyContainer
+    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyContainer
     {
         return new PrivateKeyContainer($this->key, $password);
     }
 
-    public function getPublicBundle(?string $passphrase = null): Pkcs7Container
+    public function getPublicBundle(#[\SensitiveParameter] ?string $passphrase = null): Pkcs7Container
     {
         //@TODO Needs the pasword? can use the priv key from object or throw exception if it is empty
         return (new Pkcs7Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());

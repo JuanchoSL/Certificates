@@ -10,5 +10,5 @@ interface PasswordProtectableInterface
      * @param string $password The password
      * @return static The element
      */
-    public function setPassword(string $password): static;
+    public function setPassword(#[\SensitiveParameter] string $password): static;
 }
