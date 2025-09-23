@@ -10,7 +10,7 @@ trait ChainTrait
 
     public function getChain(): ChainContainer
     {
-        return new ChainContainer($this->chain);
+        return $this->chain;
     }
 
     protected function certsShorting($data, bool $desc = true)

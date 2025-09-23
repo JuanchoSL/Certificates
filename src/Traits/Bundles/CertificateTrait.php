@@ -11,6 +11,6 @@ trait CertificateTrait
 
     public function getCertificate(): CertificateContainer
     {
-        return new CertificateContainer($this->cert);
+        return $this->cert;
     }
 }

@@ -14,7 +14,7 @@ class Pkcs7Filler extends Pkcs7Container
 
     public function __construct(#[\SensitiveParameter] PrivateKeyContainer $private)
     {
-        $this->private = $private;
+        $this->key = $private;
     }
 
     public function setCertificate(CertificateContainer $certificate): static
@@ -24,7 +24,7 @@ class Pkcs7Filler extends Pkcs7Container
     }
     public function setExtraCertificates(ChainContainer $certificates): static
     {
-        $this->extras = $certificates;
+        $this->chain = $certificates;
         return $this;
     }
 

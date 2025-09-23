@@ -36,8 +36,7 @@ class Pkcs7Container implements
         $this->pkcs7 = $cert_content;
         openssl_pkcs7_read($cert_content, $data);
         $certs = $this->certsShorting($data);
-        $this->cert = array_pop($certs);
-        $this->chain = $certs;
+        $this->cert =array_pop($certs);
 /*
         $extras = [];
         $last = '';
@@ -61,9 +60,9 @@ class Pkcs7Container implements
         } else {
             $cert = $data;
         }
-        $this->cert = new CertificateContainer(current($cert));
-        $this->extras = new ChainContainer($extras);
-*/
+        */
+        $this->cert = new CertificateContainer($this->cert);
+        $this->chain = new ChainContainer($certs);
     }
 
 /*
