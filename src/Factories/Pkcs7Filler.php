@@ -10,7 +10,7 @@ use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 class Pkcs7Filler extends Pkcs7Container
 {
 
-    private $private;
+    private $key;
 
     public function __construct(#[\SensitiveParameter] PrivateKeyContainer $private)
     {
@@ -31,7 +31,7 @@ class Pkcs7Filler extends Pkcs7Container
     public function export(): string
     {
         if (empty($this->pkcs7)) {
-            $this->pkcs7 = (string) (new Pkcs7Creator())->setPrivateKey($this->private)->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
+            $this->pkcs7 = (string) (new Pkcs7Creator())->setPrivateKey($this->key)->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
         }
         return parent::export();
     }
