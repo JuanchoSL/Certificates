@@ -32,6 +32,8 @@ trait ChainTrait
                     }
                 }
             } while (!empty($data));
+        } else {
+            $extras = $data;
         }
         if (!$desc) {
             $extras = array_reverse($extras);
