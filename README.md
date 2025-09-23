@@ -122,10 +122,15 @@ $new_private = new PrivateKeyContainer($old_private);
 $new_binary_pkcs = (new Pkcs12Creator($description, $can_be_new_password))->setPrivateKey($new_private)->setCertificate($cert)->setChain($chain);
 ```
 
+### PEM Container [OpenSSL-PKCS8-PEM](https://tecnocratica.net/wikicratica/books/certificados/page/formatos-de-los-certificados)
+
+PEM PKCS8 container is an all in one, multi purpose, with data encoded to base64 ASCII.
+It is a bundle that can includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
+
 ### Pkcs8 Bundle Container [OpenSSL-PKCS8](https://docs.openssl.org/master/man1/openssl-pkcs8/)
 
 Our PKCS8 container is an intermediate between PKCS7 and PKCS12.
-It is a bundle that includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying a unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
+It is a bundle that includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
 
 ### Pkcs7 Bundle Container [OpenSSL-PKCS7](https://docs.openssl.org/master/man1/openssl-pkcs7/)
 
