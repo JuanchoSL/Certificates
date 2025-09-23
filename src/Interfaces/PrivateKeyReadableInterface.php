@@ -12,5 +12,5 @@ interface PrivateKeyReadableInterface
      * @param string $password The password, if needed, in order to open the element
      * @return PrivateKeyContainer
      */
-    public function getPrivateKey(?string $password = null): PrivateKeyContainer;
+    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyContainer;
 }

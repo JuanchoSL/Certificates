@@ -5,13 +5,14 @@ namespace JuanchoSL\Certificates\Repositories;
 use Exception;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use Stringable;
 
-class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, Stringable, DetailableInterface
+class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, Stringable, DetailableInterface, FormateableInterface
 {
 
     use StringableTrait, SaveableTrait, DetailableTrait;
@@ -53,5 +54,16 @@ class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, S
             }
         }
         return $fingerprint ?? false;
+    }
+
+
+    public function getExtension(): string
+    {
+        return 'pub';
+    }
+
+    public function getMediaType(): string
+    {
+        return 'text/plain';
     }
 }

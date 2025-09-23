@@ -1,6 +1,6 @@
 <?php
 
-namespace JuanchoSL\Library\Tests;
+namespace JuanchoSL\Certificates\Tests\Functional;
 
 use Exception;
 use PHPUnit\Framework\TestCase;

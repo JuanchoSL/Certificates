@@ -32,14 +32,14 @@ class Pkcs12Container extends Pkcs8Container implements
     protected $data = null;
     protected $extras = null;
 
-    public function __construct(string $cert_content, string $password)
+    public function __construct(string $cert_content, #[\SensitiveParameter] string $password)
     {
         if (is_file($cert_content) && file_exists($cert_content)) {
             $cert_content = file_get_contents($cert_content);
         }
         $this->data = $cert_content;
         $this->setPassword($password);
-        if (!openssl_pkcs12_read($this->data, $output, $this->password)) {
+        if (!openssl_pkcs12_read($this->data, $output, $password)) {
             throw new UnauthorizedException("The password is not valid in order to open the container");
         }
         $this->details = $output;
@@ -48,7 +48,7 @@ class Pkcs12Container extends Pkcs8Container implements
         $this->extras = new ChainContainer($this->getDetail('extracerts') ?? []);
     }
 
-    public function getPrivateBundle(?string $passphrase = null): Pkcs8Container
+    public function getPrivateBundle(#[\SensitiveParameter] ?string $passphrase = null): Pkcs8Container
     {
         return (new Pkcs8Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
     }

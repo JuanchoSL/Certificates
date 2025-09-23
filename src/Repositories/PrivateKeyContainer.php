@@ -6,11 +6,11 @@ use Exception;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
-use JuanchoSL\Certificates\Interfaces\PasswordProtectableInterface;
+use JuanchoSL\Certificates\Interfaces\PasswordUnprotectableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
-use JuanchoSL\Certificates\Traits\PasswordProtectableTrait;
+use JuanchoSL\Certificates\Traits\PasswordUnprotectableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use OpenSSLAsymmetricKey;
@@ -22,16 +22,16 @@ class PrivateKeyContainer implements
     Stringable,
     SaveableInterface,
     DetailableInterface,
-    PasswordProtectableInterface,
+    PasswordUnprotectableInterface,
     StandarizableInterface,
     FormateableInterface
 {
 
-    use PasswordProtectableTrait, StringableTrait, SaveableTrait, DetailableTrait;
+    use PasswordUnprotectableTrait, StringableTrait, SaveableTrait, DetailableTrait;
 
     protected $data = null;
 
-    public function __construct(OpenSSLAsymmetricKey|OpenSSLCertificate|string $fullpath, ?string $passphrase = null)
+    public function __construct(#[\SensitiveParameter] OpenSSLAsymmetricKey|OpenSSLCertificate|string $fullpath, #[\SensitiveParameter] ?string $passphrase = null)
     {
         if (is_string($fullpath) && is_file($fullpath) && file_exists($fullpath) && !str_starts_with($fullpath, 'file://')) {
             $fullpath = 'file://' . $fullpath;
