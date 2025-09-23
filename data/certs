@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+include '..' . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
+use JuanchoSL\Certificates\Factories\ContainerFactory;
+use JuanchoSL\Certificates\Repositories\PEMContainer;
+use JuanchoSL\Certificates\Repositories\Pkcs8Container;
+
+$pkcs = new PEMContainer('certificates.pem');
+$var = __DIR__ . DIRECTORY_SEPARATOR . 'certificates.pub';
+$pkcs->getPrivateKey()->getPublicKey()->save($var);
+exit;
+$factory = new ContainerFactory();
+$c = $factory->createFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'certificates.8');
+echo "<pre>" . print_R($factory->createFromFile(__DIR__ . DIRECTORY_SEPARATOR . 'certificates.8'), true);
+
+echo "<pre>" . print_r($pkcs->getCertificate()->getPublicKey()->getFingerprint('md5'), true);

@@ -7,6 +7,7 @@ use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\PasswordUnprotectableInterface;
+use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
@@ -24,7 +25,8 @@ class PrivateKeyContainer implements
     DetailableInterface,
     PasswordUnprotectableInterface,
     StandarizableInterface,
-    FormateableInterface
+    FormateableInterface,
+    PublicKeyReadableInterface
 {
 
     use PasswordUnprotectableTrait, StringableTrait, SaveableTrait, DetailableTrait;
