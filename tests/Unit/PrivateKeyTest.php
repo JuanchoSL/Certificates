@@ -26,7 +26,7 @@ class PrivateKeyTest extends TestCase
             'Keyf' => [$dir . 'certificates.key'],
             'Keys' => [file_get_contents($dir . 'certificates.key')],
             'Key' => [(string) new PrivateKeyContainer($dir . 'certificates.key')],
-            'Pem' => [(string) new PEMContainer($dir . 'certificates.pem')->getPrivateKey()],
+            'Pem' => [(string) (new PEMContainer($dir . 'certificates.pem'))->getPrivateKey()],
             'Bundle8' => [(string) (new Pkcs8Container($dir . 'certificates.p8'))->getPrivateKey()],
         ];
     }
