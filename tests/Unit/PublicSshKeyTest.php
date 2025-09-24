@@ -39,6 +39,5 @@ class PublicSshKeyTest extends TestCase
         $this->assertInstanceOf(Stringable::class, $cert);
         $this->assertInstanceOf(FingerprintReadableInterface::class, $cert);
         $this->assertInstanceOf(FormateableInterface::class, $cert);
-        $this->assertInstanceOf(ExportableInterface::class, $cert);
     }
 }

@@ -24,6 +24,7 @@ class DkimContainer implements DetailableInterface, Stringable, ExportableInterf
             $fullpath = file_get_contents($fullpath);
         }
         $this->data = $fullpath;
+        $this->getDetails();
     }
 
     public function getDetails(): array|false
@@ -35,7 +36,7 @@ class DkimContainer implements DetailableInterface, Stringable, ExportableInterf
             $values[$name] = $val;
             unset($values[$key]);
         }
-        return compact(['selector', 'register', 'register_type', 'values']);
+        return $this->details = compact(['selector', 'register', 'register_type', 'values']);
     }
 
     public function export(): mixed

@@ -2,6 +2,7 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
+use JuanchoSL\Certificates\Factories\DnsDkimFactory;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
@@ -52,6 +53,8 @@ class PublicKeyContainer implements
 
     public function getDkim(?string $selector = NULL)
     {
+        return (new DnsDkimFactory())->createFromPublicKeyContainer($this, $selector);
+
         // convert a public key into a BIND TXT entry for DKIM
         $public_key = $this->getDetail('key');
         $key_content = explode("\n", trim($public_key));

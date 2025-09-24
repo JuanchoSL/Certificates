@@ -2,7 +2,7 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
-use Co\Curl\Exception;
+use Exception;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
@@ -92,6 +92,13 @@ class CertificateContainer implements
         return $result;
     }
 
+    /**
+     * Verifies digital signature of x509 certificate against a public key
+     * @url https://www.php.net/manual/en/function.openssl-x509-verify.php
+     * @param \JuanchoSL\Certificates\Repositories\PublicKeyContainer $public
+     * @throws \Exception On error, throw an exception with the string message
+     * @return bool
+     */
     public function checkIssuerByPublicKey(PublicKeyContainer $public): bool
     {
         $result = openssl_x509_verify($this->data, $public());
@@ -100,12 +107,18 @@ class CertificateContainer implements
         }
         return boolval($result);
     }
+
+    /**
+     * Checks if a private key corresponds to this certificate.
+     * The php function does not check if private is really a private key, using a PrivateKeyContainer
+     * we force the use of a really private key 
+     * @url https://www.php.net/manual/es/function.openssl-x509-check-private-key.php
+     * @param PrivateKeyContainer $private The private key to verify
+     * @throws Exception If an error 
+     * @return bool result
+     */
     public function checkSubjectPrivateKey(#[\SensitiveParameter] PrivateKeyContainer $private): bool
     {
-        $result = openssl_x509_check_private_key($this->data, $private());
-        if ($result < 0) {
-            throw new Exception(openssl_error_string());
-        }
-        return boolval($result);
+        return openssl_x509_check_private_key($this->data, $private());
     }
 }

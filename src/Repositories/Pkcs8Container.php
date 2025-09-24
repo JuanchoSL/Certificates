@@ -63,7 +63,7 @@ class Pkcs8Container extends Pkcs7Container implements
 
     public function getPublicBundle(#[\SensitiveParameter] ?string $passphrase = null): Pkcs7Container
     {
-        //@TODO Needs the pasword? can use the priv key from object or throw exception if it is empty
+        //@TODO Needs the password? can use the priv key from object or throw exception if it is empty
         return (new Pkcs7Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
     }
 
