@@ -4,7 +4,7 @@ namespace JuanchoSL\Certificates\Tests\Unit;
 
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
-use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
+use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
@@ -42,9 +42,10 @@ class PublicKeyTest extends TestCase
         $cert = new PublicKeyContainer($cert);
         $this->assertNotInstanceOf(PublicKeyReadableInterface::class, $cert);
         $this->assertInstanceOf(DetailableInterface::class, $cert);
-        $this->assertInstanceOf(SaveableInterface::class, $cert);
         $this->assertInstanceOf(ExportableInterface::class, $cert);
+        $this->assertInstanceOf(SaveableInterface::class, $cert);
         $this->assertInstanceOf(StandarizableInterface::class, $cert);
         $this->assertInstanceOf(Stringable::class, $cert);
+        $this->assertInstanceOf(FormateableInterface::class, $cert);
     }
 }

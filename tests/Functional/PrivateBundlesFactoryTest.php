@@ -7,9 +7,9 @@ use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ChainReadableInterface;
 use JuanchoSL\Certificates\Interfaces\PrivateKeyReadableInterface;
 use JuanchoSL\Certificates\Repositories\PEMContainer;
-use JuanchoSL\Certificates\Repositories\Pkcs7Container;
 use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use PHPUnit\Framework\TestCase;
+
 class PrivateBundlesFactoryTest extends TestCase
 {
 

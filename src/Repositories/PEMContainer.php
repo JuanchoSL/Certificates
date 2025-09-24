@@ -2,7 +2,7 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
-use Co\Curl\Exception;
+use Exception;
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
