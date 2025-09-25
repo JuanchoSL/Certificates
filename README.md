@@ -138,12 +138,12 @@ $new_binary_pkcs = (new Pkcs12Creator($description, $can_be_new_password))->setP
 PEM PKCS8 container is an all in one, multi purpose, with data encoded to base64 ASCII.
 It is a bundle that can includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
 
-### Pkcs8 Bundle Container [OpenSSL-PKCS8](https://docs.openssl.org/master/man1/openssl-pkcs8/)
+### Pkcs8 Signed Bundle Container [OpenSSL-PKCS8](https://docs.openssl.org/master/man1/openssl-pkcs8/)
 
 Our PKCS8 container is an intermediate between PKCS7 and PKCS12.
 It is a bundle that includes the entire information package (just like PKCS12) signed with the private key (as PKCS7), but without requiring a password for read the contents package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
 
-### Pkcs7 Bundle Container [OpenSSL-PKCS7](https://docs.openssl.org/master/man1/openssl-pkcs7/)
+### Pkcs7 Signed Bundle Container [OpenSSL-PKCS7](https://docs.openssl.org/master/man1/openssl-pkcs7/)
 
 This is a signed package that includes our public information, certificate, with the public key and optionally our certification chain, in a single file, so that it can be shared and used to verify our signatures or give third parties the possibility of encrypting content that only we, with our private key, can decrypt.
 
@@ -153,7 +153,7 @@ With PHP, we can [export all certificates](https://www.php.net/manual/es/functio
 
 ### PKCS12
 
-Creates an standar PKCS12 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for an non empty password, check than the certificate are related and it has been created with the private key
+Creates a standard PKCS12 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for an non empty password, check than the certificate are related and it has been created with the private key
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
@@ -172,24 +172,24 @@ $pkcs12->save($destiny_path); #returns true|false
 
 ### PKCS8
 
-Creates an standar PKCS12 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for an non empty password, check than the certificate are related and it has been created with the private key
+Creates a PKCS8 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for a non empty password, check than the certificate are related and it has been created with the private key
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
 $certificate = new CertificateContainer($certificate_file_or_data);
 $chain = new ChainContainer($chain_file_or_data);
-$pkcs8 = (new Pkcs8Creator($description, $password))->setPrivateKey($private)->setCertificate($certificate)->setChain($chain)->export();
+$pkcs8 = (new Pkcs8Creator)->setPrivateKey($private)->setCertificate($certificate)->setChain($chain)->export();
 ```
 
 ### PKCS7
 
-Creates an standar PKCS7 container, in order to save all the public credentials signed into an unique repository. The creator check for required files, private key and certificate, check than the .certificate are related and it has been created with the private key.The Private key is required only for sign the bundle, it is not included.
+Creates a standard PKCS7 container, in order to save all the public credentials signed into an unique repository. The creator check for required files, private key and certificate, check than the .certificate are related and it has been created with the private key.The Private key is required only for sign the bundle, it is not included.
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
 $certificate = new CertificateContainer($certificate_file_or_data);
 $chain = new ChainContainer($chain_file_or_data);
-$pkcs7 = (new Pkcs7Creator($description, $password))->setPrivateKey($private)->setCertificate($certificate)->setChain($chain);
+$pkcs7 = (new Pkcs7Creator)->setPrivateKey($private)->setCertificate($certificate)->setChain($chain);
 ```
 
 then you can export it as binary data (DER)
@@ -201,13 +201,13 @@ $binary_pkcs7 = $pkcs7->export();
 export it as ASCII Base64 data with headers BEGIN PKCS7 | END PKCS7
 
 ```php
-$b64_pkcs7 = (string )$pkcs7;
+$b64_pkcs7 = (string) $pkcs7;
 ```
 
 or save into a selected file
 
 ```php
-$pakcs7->save($desired_saving_path);
+$pkcs7->save($desired_saving_path);
 ```
 
 ## Readers and Factories

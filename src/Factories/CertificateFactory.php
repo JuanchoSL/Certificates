@@ -48,7 +48,6 @@ class CertificateFactory
 
         if ($full_chain) {
             $response = $data['peer_certificate_chain'];
-            //$response[] = $data['peer_certificate'];
             return new ChainContainer($response);
         } else {
             return new CertificateContainer($data["peer_certificate"]);

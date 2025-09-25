@@ -5,6 +5,7 @@ namespace JuanchoSL\Certificates\Factories;
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\ChainContainer;
+use JuanchoSL\Certificates\Repositories\LockedContainer;
 use JuanchoSL\Certificates\Repositories\PEMContainer;
 use JuanchoSL\Certificates\Repositories\Pkcs12Container;
 use JuanchoSL\Certificates\Repositories\Pkcs7Container;
@@ -12,6 +13,8 @@ use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 use JuanchoSL\Certificates\Repositories\PublicKeyContainer;
 use JuanchoSL\Certificates\Repositories\PublicSshKeyContainer;
+use JuanchoSL\Exceptions\NotFoundException;
+use JuanchoSL\Exceptions\UnsupportedMediaTypeException;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use Psr\Http\Message\StreamInterface;
@@ -24,35 +27,34 @@ class ContainerFactory
         if (is_string($origin)) {
             if (is_file($origin) && file_exists($origin)) {
                 return $this->createFromFile($origin);
-            } elseif (str_contains($origin, '----BEGIN')) {
-                return $this->createFromString($origin);
-            } else {
-                return $this->createFromBinary($origin);
             }
+            return $this->createFromContents($origin);
         } elseif (is_object($origin)) {
             return $this->createFromEntity($origin);
         }
     }
     public function createFromFile(string $origin)
     {
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mimetype = finfo_file($finfo, $origin);
-        finfo_close($finfo);
-        if (str_contains(strtolower($mimetype), 'charset=binary')) {
-            return $this->createFromBinary($origin);
-            //}elseif(str_contains(strtolower($mimetype), 'application/x-pkcs12')){
-            //return new Pkcs12Container($origin);
-        } elseif (str_contains(strtolower($mimetype), 'application/x-pkcs7')) {
-            return new Pkcs7Container($origin);
-        } elseif (str_contains(strtolower($mimetype), 'application/pkcs8')) {
-            return new Pkcs8Container($origin);
+        if (!is_file($origin) || !file_exists($origin)) {
+            throw new NotFoundException("The file {$origin} does not exists or it is not readable");
         }
-        $origin = file_get_contents($origin);
-        if (substr($origin, 3, 1) == '-') {
-            return $this->createFromString($origin);
+        $contents = file_get_contents($origin);
+        if (str_contains($contents, chr(0)) !== false) {
+            $finfo = finfo_open(FILEINFO_MIME);
+            $mimetype = finfo_file($finfo, $origin);
+            finfo_close($finfo);
+            return $this->createFromMimetype($origin, $mimetype);
         }
+        return $this->createFromContents($contents);
     }
-    public function createFromString(string $origin)
+    public function createFromContents(string $origin)
+    {
+        if (str_contains($origin, chr(0)) !== false) {
+            return $this->createFromBinary($origin);
+        }
+        return $this->createFromString($origin);
+    }
+    protected function createFromString(string $origin)
     {
         $extractor = new ExtractorFactory();
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PKCS7)) {
@@ -60,6 +62,9 @@ class ContainerFactory
         }
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PKCS8)) {
             return new Pkcs8Container($origin);
+        }
+        if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PUBLIC_KEY)) {
+            return new PublicKeyContainer($origin);
         }
         $private = $certificate = $chain = $public = false;
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY) or $extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED)) {
@@ -70,9 +75,6 @@ class ContainerFactory
             if (count($extractor->extractParts($origin, ContentTypesEnum::CONTENTTYPE_CERTIFICATE)) > 1) {
                 $chain = true;
             }
-        }
-        if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PUBLIC_KEY)) {
-            $public = true;
         }
         if ($private or $certificate) {
             if (!$certificate) {
@@ -93,6 +95,27 @@ class ContainerFactory
         }
 
     }
+    public function createFromMimetype($origin, $mimetype)
+    {
+        list($mimetype, $charset) = explode(";", $mimetype);
+        switch (trim($mimetype)) {
+            case 'application/x-x509-ca-certificates':
+            case 'application/x-x509-user-certificates':
+                return new CertificateContainer($origin);
+
+            case 'application/x-pkcs7-certificates':
+                return new Pkcs7Container($origin);
+
+            case 'application/pkcs8':
+                return new Pkcs8Container($origin);
+
+            case 'application/x-pkcs12':
+            case 'application/octet-stream':
+                return new LockedContainer($origin, Pkcs12Container::class);
+        }
+        throw new UnsupportedMediaTypeException("The file {$origin} with mimetype {$mimetype} does not have available container");
+    }
+
     public function createFromEntity($origin)
     {
         $type = get_class($origin);
@@ -105,17 +128,37 @@ class ContainerFactory
                 return new PrivateKeyContainer($origin);
 
             case StreamInterface::class:
-                return $this->createFromString((string) $origin->getStream());
+                try {
+
+                    if (
+                        in_array($origin->getMetadata('uri'), [
+                            "application/pkcs8",
+                            "application/pkcs10",
+                            "application/pkix-cert",
+                            "application/pkix-crl",
+                            "application/pkcs7-mime",
+                            "application/x-x509-ca-cert",
+                            "application/x-x509-user-cert",
+                            "application/x-pkcs7-crl",
+                            "application/x-pem-file",
+                            "application/x-pkcs12",
+                            "application/x-pkcs7-certificates",
+                            "application/x-pkcs7-certreqresp"
+                        ])
+                    ) {
+                        return $this->createFromMimetype((string) $origin, $origin->getClientMediaType());
+                    }
+                    return $this->createFromFile($origin->getStream()->getMetadata('uri'));
+                } catch (\Exception $e) {
+                    return $this->createFromContents((string) $origin->getStream());
+
+                }
         }
     }
+
     public function createFromBinary($origin)
     {
-        //return new Pkcs12Container($origin);
-        //echo base64_encode($origin);
-        $finfo = finfo_open(FILEINFO_MIME);
-        $mimetype = finfo_file($finfo, $origin);
-        finfo_close($finfo);
-        return $mimetype;
+        return new LockedContainer($origin, Pkcs12Container::class);
     }
 
 }

@@ -36,46 +36,11 @@ class Pkcs7Container implements
         $this->pkcs7 = $cert_content;
         openssl_pkcs7_read($cert_content, $data);
         $certs = $this->certsShorting($data);
-        $this->cert =array_pop($certs);
-/*
-        $extras = [];
-        $last = '';
-
-        if (count($data) > 1) {
-            do {
-                foreach ($data as $key => $crt) {
-                    $x509 = openssl_x509_read($crt);
-                    $details = openssl_x509_parse($x509);
-                    $compare = (empty($last)) ? $details['subject']['CN'] : $last;
-                    if ($details['issuer']['CN'] == $compare) {
-                        $extras[] = $crt;
-                        $last = $details['subject']['CN'];
-                        unset($data[$key]);
-                        continue;
-                    }
-                }
-            } while (!empty($data));
-            $cert = array_slice($extras, -1);
-            $extras = array_slice($extras, 0, -1);
-        } else {
-            $cert = $data;
-        }
-        */
+        $this->cert = array_pop($certs);
         $this->cert = new CertificateContainer($this->cert);
         $this->chain = new ChainContainer($certs);
     }
 
-/*
-    public function getCertificate(): CertificateContainer
-    {
-        return $this->cert;
-    }
-
-    public function getChain(): ChainContainer
-    {
-        return $this->extras;
-    }
-*/
     public function export(): string
     {
         return $this->pkcs7;

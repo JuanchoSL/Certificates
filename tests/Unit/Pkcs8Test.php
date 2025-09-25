@@ -9,7 +9,6 @@ use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\PasswordUnprotectableInterface;
 use JuanchoSL\Certificates\Interfaces\PrivateKeyReadableInterface;
-use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\Pkcs8Container;

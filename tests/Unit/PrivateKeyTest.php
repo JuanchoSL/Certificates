@@ -11,6 +11,7 @@ use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use JuanchoSL\Certificates\Repositories\PEMContainer;
+use JuanchoSL\Certificates\Repositories\Pkcs12Container;
 use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 use PHPUnit\Framework\TestCase;
@@ -28,6 +29,7 @@ class PrivateKeyTest extends TestCase
             'Key' => [(string) new PrivateKeyContainer($dir . 'certificates.key')],
             'Pem' => [(string) (new PEMContainer($dir . 'certificates.pem'))->getPrivateKey()],
             'Bundle8' => [(string) (new Pkcs8Container($dir . 'certificates.p8'))->getPrivateKey()],
+            'Bundle12' => [(string) (new Pkcs12Container($dir . 'certificates.p12', getenv('CRYPT_PASSWORD')))->getPrivateKey()],
         ];
     }
 

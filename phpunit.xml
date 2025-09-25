@@ -11,4 +11,7 @@
             <directory>./tests/Functional</directory>
         </testsuite>
     </testsuites>
+    <php>
+        <env name="CRYPT_PASSWORD" value="certificates" force="true" />
+    </php>
 </phpunit>

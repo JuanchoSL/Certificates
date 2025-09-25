@@ -1,4 +1,4 @@
-<?php //declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace JuanchoSL\Certificates\Repositories;
 
@@ -31,16 +31,6 @@ class ChainContainer implements
             }
             $extractor = new ExtractorFactory();
             $fullpath = $extractor->extractParts($fullpath, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
-            /*
-            preg_match_all('~-----BEGIN CERTIFICATE-----([\r|\n]+)([\w\s=/+]+)([\r|\n]+)-----END CERTIFICATE-----~m', $fullpath, $matches);
-            if (!empty($matches[0])) {
-                $extracerts = [];
-                foreach ($matches[0] as $extracert) {
-                    $extracerts[] = $extracert;
-                }
-                $fullpath = $extracerts;
-            }
-            */
         }
         if (is_iterable($fullpath)) {
             foreach ($fullpath as $extracert) {

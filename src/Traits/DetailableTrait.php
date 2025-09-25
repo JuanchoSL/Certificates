@@ -10,7 +10,7 @@ trait DetailableTrait
     public function getDetail(string $index): mixed
     {
         if (is_null($this->details)) {
-            $this->getDetails();
+            $this->details = $this->getDetails();
         }
         return (array_key_exists($index, $this->details)) ? $this->details[$index] : null;
     }

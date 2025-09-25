@@ -5,14 +5,12 @@ namespace JuanchoSL\Certificates\Tests\Unit;
 use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ChainReadableInterface;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
-use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\PasswordProtectableInterface;
 use JuanchoSL\Certificates\Interfaces\PasswordUnprotectableInterface;
 use JuanchoSL\Certificates\Interfaces\PrivateKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
-use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\Pkcs12Container;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
@@ -27,7 +25,7 @@ class Pkcs12Test extends TestCase
     public function testReadContainer()
     {
         $bundle = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data', 'certificates.p12']);
-        $cert = new Pkcs12Container($bundle, 'certificates');
+        $cert = new Pkcs12Container($bundle, getenv('CRYPT_PASSWORD'));
         $this->assertInstanceOf(CertificateReadableInterface::class, $cert);
         $this->assertInstanceOf(ChainReadableInterface::class, $cert);
         $this->assertInstanceOf(DetailableInterface::class, $cert);
@@ -52,7 +50,7 @@ class Pkcs12Test extends TestCase
         $issuer = new CertificateContainer($issuer);
 
         $bundle = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data', 'certificates.p12']);
-        $pkcs = new Pkcs12Container($bundle, 'certificates');
+        $pkcs = new Pkcs12Container($bundle, getenv('CRYPT_PASSWORD'));
 
         $private = $pkcs->getPrivateKey();
         $this->assertNotFalse($private, "Check than container have a private key available");
@@ -73,7 +71,7 @@ class Pkcs12Test extends TestCase
         $issuer = new CertificateContainer($issuer);
 
         $bundle = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data', 'certificates.p12']);
-        $pkcs = new Pkcs12Container($bundle, 'certificates');
+        $pkcs = new Pkcs12Container($bundle, getenv('CRYPT_PASSWORD'));
 
         $cert = $pkcs->getCertificate();
         $this->assertEquals($issuer->getDetail('subject')['commonName'], $cert->getDetail('issuer')['commonName'], "The common name is correct for the issuer");
@@ -85,7 +83,7 @@ class Pkcs12Test extends TestCase
     public function testCheckChain()
     {
         $bundle = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data', 'certificates.p12']);
-        $pkcs = new Pkcs12Container($bundle, 'certificates');
+        $pkcs = new Pkcs12Container($bundle, getenv('CRYPT_PASSWORD'));
 
         $chain = $pkcs->getChain();
         $this->assertNotEmpty($chain, "The bundle have a chain and is not empty");

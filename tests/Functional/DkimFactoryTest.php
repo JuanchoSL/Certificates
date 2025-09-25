@@ -13,7 +13,7 @@ class DkimFactoryTest extends TestCase
 {
 
     protected $extractor;
-    protected function providerData($cache): array
+    protected function providerData(): array
     {
         $dir = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data']) . DIRECTORY_SEPARATOR;
         return [

@@ -11,7 +11,7 @@ class PublicKeyFactoryTest extends TestCase
 {
 
     protected $extractor;
-    protected function providerData($cache): array
+    protected function providerData(): array
     {
         $dir = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data']) . DIRECTORY_SEPARATOR;
         return [
@@ -48,7 +48,7 @@ class PublicKeyFactoryTest extends TestCase
      */
     public function testOpenContainerByString($provider)
     {
-        $entity = $this->extractor->createFromString(file_get_contents($provider));
+        $entity = $this->extractor->createFromContents(file_get_contents($provider));
         $this->assertInstanceOf(PublicKeyReadableInterface::class, $entity);
 
     }

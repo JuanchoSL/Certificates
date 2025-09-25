@@ -26,6 +26,7 @@ class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, S
             $fullpath = file_get_contents($fullpath);
         }
         $this->data = $fullpath;
+        $this->details = $this->getDetails();
     }
 
     public function getDetails(): array|false

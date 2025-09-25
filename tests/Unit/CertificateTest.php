@@ -9,6 +9,7 @@ use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
+use JuanchoSL\Certificates\Repositories\Pkcs12Container;
 use JuanchoSL\Certificates\Repositories\Pkcs7Container;
 use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use PHPUnit\Framework\TestCase;
@@ -26,6 +27,7 @@ class CertificateTest extends TestCase
             'Cert' => [(string) new CertificateContainer($dir . 'ca.crt')],
             'Bundle7' => [(string) (new Pkcs7Container($dir . 'certificates.p7b'))->getCertificate()],
             'Bundle8' => [(string) (new Pkcs8Container($dir . 'certificates.p8'))->getCertificate()],
+            'Bundle12' => [(string) (new Pkcs12Container($dir . 'certificates.p12', getenv('CRYPT_PASSWORD')))->getCertificate()],
         ];
     }
 
