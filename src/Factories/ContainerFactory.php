@@ -13,6 +13,7 @@ use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 use JuanchoSL\Certificates\Repositories\PublicKeyContainer;
 use JuanchoSL\Certificates\Repositories\PublicSshKeyContainer;
+use JuanchoSL\Certificates\Repositories\SigningRequestContainer;
 use JuanchoSL\Exceptions\NotFoundException;
 use JuanchoSL\Exceptions\UnsupportedMediaTypeException;
 use OpenSSLAsymmetricKey;
@@ -65,6 +66,9 @@ class ContainerFactory
         }
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PUBLIC_KEY)) {
             return new PublicKeyContainer($origin);
+        }
+        if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_CERTIFICATE_REQUEST)) {
+            return new SigningRequestContainer($origin);
         }
         $private = $certificate = $chain = $public = false;
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY) or $extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED)) {
