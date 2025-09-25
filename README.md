@@ -214,27 +214,26 @@ $pkcs7->save($desired_saving_path);
 
 Using factories, you can instantiate containers from few origins and formats, dellegating to the library the container selection, usefull when you can receive distincts types and avoid the user check and control.
 
-### Extractor
+### Container Factory
 
-If you can receive data from files or strings and streams, don't needs open and check to select the right container, you can use someone extractor that do this work.
+If you can receive data from files or strings and streams, don't needs open and check to select the right container, you can use someone factory that do this work.
 
-> All containers are auto callables **except Pkcs12**, because is the only one that needs a password.
+> All containers are auto callables **except Pkcs12** or **encrypted primary key**, because its needs a password, the factory try to create a LockedContainer that need to be invoked passing the password por unlock it.
 
 Actually you have available:
 
-- createFromFile
-- createFromString
-- ccreateFromEntity
-- createFromUnknow
-- createFromMimetype
+- createFromUnknow -> Check the data and send to method file, contents or entity
+- createFromFile -> Check the file mimetype and send it to function mimetype if is available, or try to process using contents
+- createFromContents -> Check the contents and send to process as string or binary
+- createFromMimetype -> using the readed mimetype, create an compatible  container for it if is available
+- createFromEntity -> if is an standard openssl php function, try to convert. It can use Stream objects using the user mimetype, uploaded path or the stream contents.
+- createFromBinary -> as last chance, try using binary data as Pkcs12 package
 
 ```php
-
 $stream = $psr15_server_request->getUploadedFiles()['file']->getStream();
-
 $container = (new ContainerFactory)->createFromEntity($stream);
-
 ```
+
 
 ## Interfaces
 
