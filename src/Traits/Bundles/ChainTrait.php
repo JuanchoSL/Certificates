@@ -2,6 +2,7 @@
 
 namespace JuanchoSL\Certificates\Traits\Bundles;
 
+use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\ChainContainer;
 
 trait ChainTrait
@@ -20,13 +21,14 @@ trait ChainTrait
 
         if (count($data) > 1) {
             do {
-                foreach ($data as $key => $crt) {
-                    $x509 = openssl_x509_read($crt);
-                    $details = openssl_x509_parse($x509);
-                    $compare = (empty($last)) ? $details['subject']['CN'] : $last;
-                    if ($details['issuer']['CN'] == $compare) {
-                        $extras[] = $crt;
-                        $last = $details['subject']['CN'];
+                foreach ($data as $key => $cert) {
+                    if (!$cert instanceof CertificateContainer) {
+                        $cert = new CertificateContainer($cert);
+                    }
+                    $compare = (empty($last)) ? $cert->getPublicKey() : $last;
+                    if ($cert->checkIssuerByPublicKey($compare)) {
+                        $extras[] = (string) $cert;
+                        $last = $cert->getPublicKey();
                         unset($data[$key]);
                         continue;
                     }
