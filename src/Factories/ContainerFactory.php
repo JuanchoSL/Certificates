@@ -78,6 +78,9 @@ class ContainerFactory
         }
         if ($private or $certificate) {
             if (!$certificate) {
+                if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED)) {
+                    return new LockedContainer($origin, PrivateKeyContainer::class);
+                }
                 return new PrivateKeyContainer($origin);
             } elseif (!$private) {
                 if (!$chain) {

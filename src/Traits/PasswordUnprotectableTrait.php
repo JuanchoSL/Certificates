@@ -12,4 +12,9 @@ trait PasswordUnprotectableTrait
         $this->password = empty($password) ? null : $password;
         return $this;
     }
+
+    public function isProtected(): bool
+    {
+        return !empty($this->password);
+    }
 }

@@ -3,6 +3,8 @@
 namespace JuanchoSL\Certificates\Repositories;
 
 use Exception;
+use JuanchoSL\Certificates\Enums\ContentTypesEnum;
+use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
@@ -14,6 +16,7 @@ use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\PasswordUnprotectableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
+use JuanchoSL\Exceptions\ForbiddenException;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use Stringable;
@@ -35,8 +38,22 @@ class PrivateKeyContainer implements
 
     public function __construct(#[\SensitiveParameter] OpenSSLAsymmetricKey|OpenSSLCertificate|string $fullpath, #[\SensitiveParameter] ?string $passphrase = null)
     {
+        /*
         if (is_string($fullpath) && is_file($fullpath) && file_exists($fullpath) && !str_starts_with($fullpath, 'file://')) {
             $fullpath = 'file://' . $fullpath;
+        }
+        */
+        if (is_string($fullpath)) {
+            if (str_starts_with($fullpath, 'file://')) {
+                $fullpath = substr($fullpath, 7);
+            }
+            if (is_file($fullpath) && file_exists($fullpath)) {
+                $fullpath = file_get_contents($fullpath);
+            }
+        }
+
+        if ((new ExtractorFactory)->readerPart($fullpath, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED) && empty($passphrase)) {
+            throw new ForbiddenException("You need the password to uncrypt this private key");
         }
         $this->setPassword($passphrase);
         $this->data = openssl_pkey_get_private($fullpath, $this->password);
