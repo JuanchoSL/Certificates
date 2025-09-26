@@ -38,11 +38,6 @@ class PrivateKeyContainer implements
 
     public function __construct(#[\SensitiveParameter] OpenSSLAsymmetricKey|OpenSSLCertificate|string $fullpath, #[\SensitiveParameter] ?string $passphrase = null)
     {
-        /*
-        if (is_string($fullpath) && is_file($fullpath) && file_exists($fullpath) && !str_starts_with($fullpath, 'file://')) {
-            $fullpath = 'file://' . $fullpath;
-        }
-        */
         if (is_string($fullpath)) {
             if (str_starts_with($fullpath, 'file://')) {
                 $fullpath = substr($fullpath, 7);
@@ -52,7 +47,7 @@ class PrivateKeyContainer implements
             }
         }
 
-        if ((new ExtractorFactory)->readerPart($fullpath, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED) && empty($passphrase)) {
+        if (is_string($fullpath) && (new ExtractorFactory)->readerPart($fullpath, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED) && empty($passphrase)) {
             throw new ForbiddenException("You need the password to uncrypt this private key");
         }
         $this->setPassword($passphrase);
