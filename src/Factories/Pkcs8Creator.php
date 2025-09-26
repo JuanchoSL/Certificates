@@ -17,7 +17,7 @@ class Pkcs8Creator extends Pkcs7Creator implements Stringable, SaveableInterface
         if (!openssl_x509_check_private_key($this->certificate->export(), $this->private->export())) {
             throw new Exception("The Certificated is not valid for the Private key");
         }
-        if ($this->extracerts->count() > 0) {
+        if (!empty($this->extracerts) && $this->extracerts->count() > 0) {
             $this->extracerts->save($xtra);
         }
 
