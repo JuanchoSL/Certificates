@@ -50,7 +50,7 @@ class Pkcs12Container extends Pkcs8Container implements
 
     public function getPrivateBundle(#[\SensitiveParameter] ?string $passphrase = null): Pkcs8Container
     {
-        return (new Pkcs8Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
+        return (new Pkcs8Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setChain($this->getChain());
     }
 
     public function export(): string

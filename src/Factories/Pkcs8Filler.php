@@ -22,7 +22,7 @@ class Pkcs8Filler extends Pkcs8Container
         $this->cert = $certificate;
         return $this;
     }
-    public function setExtraCertificates(ChainContainer $certificates): static
+    public function setChain(ChainContainer $certificates): static
     {
         $this->chain = $certificates;
         return $this;
@@ -31,7 +31,7 @@ class Pkcs8Filler extends Pkcs8Container
     public function export(): string
     {
         if (empty($this->pkcs8)) {
-            $this->pkcs8 = (string) (new Pkcs8Creator())->setPrivateKey($this->key)->setCertificate($this->cert)->setExtraCertificates($this->chain);
+            $this->pkcs8 = (string) (new Pkcs8Creator())->setPrivateKey($this->key)->setCertificate($this->cert)->setChain($this->chain);
         }
         return parent::export();
     }

@@ -30,7 +30,7 @@ class Pkcs7Creator implements Stringable, SaveableInterface
         $this->certificate = $certificate;
         return $this;
     }
-    public function setExtraCertificates(ChainContainer $certificates): static
+    public function setChain(ChainContainer $certificates): static
     {
         $this->extracerts = $certificates;
         return $this;
