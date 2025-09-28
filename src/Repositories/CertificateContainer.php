@@ -3,35 +3,21 @@
 namespace JuanchoSL\Certificates\Repositories;
 
 use Exception;
-use JuanchoSL\Certificates\Interfaces\DetailableInterface;
-use JuanchoSL\Certificates\Interfaces\ExportableInterface;
-use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
-use JuanchoSL\Certificates\Interfaces\FormateableInterface;
-use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
-use JuanchoSL\Certificates\Interfaces\SaveableInterface;
-use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
-use JuanchoSL\Certificates\Interfaces\VerifyableInterface;
+use JuanchoSL\Certificates\Enums\ContentTypesEnum;
+use JuanchoSL\Certificates\Factories\ConverterFactory;
+use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
+use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use OpenSSLCertificate;
-use Stringable;
 
-class CertificateContainer implements
-    PublicKeyReadableInterface,
-    ExportableInterface,
-    Stringable,
-    SaveableInterface,
-    DetailableInterface,
-    StandarizableInterface,
-    FingerprintReadableInterface,
-    FormateableInterface,
-    VerifyableInterface
+class CertificateContainer implements CertificateInterface
 {
 
     use DetailableTrait, StringableTrait, SaveableTrait;
 
-    protected $data = null;
+    protected OpenSSLCertificate $data;
 
     public function __construct(OpenSSLCertificate|string $cert_content)
     {
@@ -41,7 +27,7 @@ class CertificateContainer implements
         $this->data = openssl_x509_read($cert_content);
     }
 
-    public function getPublicKey(): PublicKeyContainer
+    public function getPublicKey(): PublicKeyInterface
     {
         return new PublicKeyContainer(openssl_get_publickey($this->data));
     }
@@ -52,6 +38,10 @@ class CertificateContainer implements
     }
 
     public function export(): string
+    {
+        return (new ConverterFactory())->convertFromPemToBinary((string) $this, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
+    }
+    public function __tostring(): string
     {
         openssl_x509_export($this(), $out);
         return $out;

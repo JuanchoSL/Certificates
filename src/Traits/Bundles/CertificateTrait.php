@@ -2,14 +2,14 @@
 
 namespace JuanchoSL\Certificates\Traits\Bundles;
 
-use JuanchoSL\Certificates\Repositories\CertificateContainer;
+use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
 
 trait CertificateTrait
 {
 
-    protected $cert = null;
+    protected ?CertificateInterface $cert = null;
 
-    public function getCertificate(): CertificateContainer
+    public function getCertificate(): CertificateInterface
     {
         return $this->cert;
     }

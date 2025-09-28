@@ -2,14 +2,14 @@
 
 namespace JuanchoSL\Certificates\Interfaces;
 
-use JuanchoSL\Certificates\Repositories\PublicKeyContainer;
+use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 
 interface PublicKeyReadableInterface
 {
 
     /**
      * Retrieve the included Async Public Key Container
-     * @return PublicKeyContainer
+     * @return PublicKeyInterface
      */
-    public function getPublicKey(): PublicKeyContainer;
+    public function getPublicKey(): PublicKeyInterface;
 }

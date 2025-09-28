@@ -2,14 +2,14 @@
 
 namespace JuanchoSL\Certificates\Interfaces;
 
-use JuanchoSL\Certificates\Repositories\ChainContainer;
+use JuanchoSL\Certificates\Interfaces\Complex\ChainInterface;
 
 interface ChainReadableInterface
 {
 
     /**
      * Retrieve a Certificate Container Collection as a Chain Container iterable object
-     * @return ChainContainer
+     * @return ChainInterface
      */
-    public function getChain(): ChainContainer;
+    public function getChain(): ChainInterface;
 }

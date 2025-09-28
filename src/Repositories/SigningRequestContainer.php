@@ -2,6 +2,7 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
+use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
@@ -29,7 +30,7 @@ class SigningRequestContainer implements Stringable, ExportableInterface, Saveab
         $this->data = $data;
     }
 
-    public function getPublicKey(): PublicKeyContainer
+    public function getPublicKey(): PublicKeyInterface
     {
         return new PublicKeyContainer(openssl_csr_get_public_key($this->data));
     }

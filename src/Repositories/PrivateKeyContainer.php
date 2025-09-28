@@ -4,37 +4,26 @@ namespace JuanchoSL\Certificates\Repositories;
 
 use Exception;
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
+use JuanchoSL\Certificates\Factories\ConverterFactory;
 use JuanchoSL\Certificates\Factories\ExtractorFactory;
-use JuanchoSL\Certificates\Interfaces\DetailableInterface;
-use JuanchoSL\Certificates\Interfaces\ExportableInterface;
-use JuanchoSL\Certificates\Interfaces\FormateableInterface;
-use JuanchoSL\Certificates\Interfaces\PasswordUnprotectableInterface;
-use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
-use JuanchoSL\Certificates\Interfaces\SaveableInterface;
-use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
+use JuanchoSL\Certificates\Interfaces\Complex\PrivateKeyInterface;
+use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
+use JuanchoSL\Certificates\Traits\LoggableTrait;
 use JuanchoSL\Certificates\Traits\PasswordUnprotectableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use JuanchoSL\Exceptions\ForbiddenException;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
-use Stringable;
 
 class PrivateKeyContainer implements
-    ExportableInterface,
-    Stringable,
-    SaveableInterface,
-    DetailableInterface,
-    PasswordUnprotectableInterface,
-    StandarizableInterface,
-    FormateableInterface,
-    PublicKeyReadableInterface
+    PrivateKeyInterface
 {
 
-    use PasswordUnprotectableTrait, StringableTrait, SaveableTrait, DetailableTrait;
+    use PasswordUnprotectableTrait, StringableTrait, SaveableTrait, DetailableTrait, LoggableTrait;
 
-    protected $data = null;
+    protected OpenSSLAsymmetricKey $data;
 
     public function __construct(#[\SensitiveParameter] OpenSSLAsymmetricKey|OpenSSLCertificate|string $fullpath, #[\SensitiveParameter] ?string $passphrase = null)
     {
@@ -45,19 +34,19 @@ class PrivateKeyContainer implements
             if (is_file($fullpath) && file_exists($fullpath)) {
                 $fullpath = file_get_contents($fullpath);
             }
-        }
-
-        if (is_string($fullpath) && (new ExtractorFactory)->readerPart($fullpath, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED) && empty($passphrase)) {
-            throw new ForbiddenException("You need the password to uncrypt this private key");
+            if ((new ExtractorFactory)->readerPart($fullpath, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED) && empty($passphrase)) {
+                throw new ForbiddenException("You need the password to uncrypt this private key");
+            }
         }
         $this->setPassword($passphrase);
-        $this->data = openssl_pkey_get_private($fullpath, $this->password?->getValue());
-        if ($this->data == false) {
+        $data = openssl_pkey_get_private($fullpath, $this->password?->getValue());
+        if ($data == false) {
             throw new Exception(openssl_error_string());
         }
+        $this->data = $data;
     }
 
-    public function getPublicKey(): PublicKeyContainer
+    public function getPublicKey(): PublicKeyInterface
     {
         return new PublicKeyContainer($this->getDetail('key'));
     }
@@ -69,11 +58,17 @@ class PrivateKeyContainer implements
 
     public function export(): string
     {
-        openssl_pkey_export($this->data, $out, $this->password?->getValue());
+        $header = ($this->isProtected()) ? ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED : ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY;
+        return (new ConverterFactory())->convertFromPemToBinary((string) $this, $header);
+    }
+
+    public function __tostring(): string
+    {
+        openssl_pkey_export($this(), $out, $this->password?->getValue());
         return $out;
     }
 
-    public function __invoke(): mixed
+    public function __invoke(): OpenSSLAsymmetricKey
     {
         return $this->data;
     }

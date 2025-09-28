@@ -2,6 +2,9 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
+use JuanchoSL\Certificates\Enums\ContentTypesEnum;
+use JuanchoSL\Certificates\Factories\ConverterFactory;
+use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ChainReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
@@ -23,29 +26,36 @@ class Pkcs7Container implements
 {
     use StringableTrait, SaveableTrait, ChainTrait, CertificateTrait;
 
-    protected $pkcs7 = null;
+    private $pkcs7 = null;
 
     public function __construct(string $cert_content)
     {
         if (is_file($cert_content) && file_exists($cert_content)) {
             $cert_content = file_get_contents($cert_content);
         }
-        if (!str_starts_with($cert_content, '-----')) {
-            $cert_content = implode("\n", ['-----BEGIN PKCS7-----', base64_encode($cert_content), '-----END PKCS7-----']);
+        if (str_contains($cert_content, chr(0)) === false) {
+            if (str_starts_with($cert_content, '-----')) {
+                $cert_content = (new ConverterFactory())->convertFromPemToBinary($cert_content, ContentTypesEnum::CONTENTTYPE_PKCS7);
+            }
         }
+        $cert_content = (new ConverterFactory())->convertFromBinaryToDer($cert_content, ContentTypesEnum::CONTENTTYPE_PKCS7);
         $this->pkcs7 = $cert_content;
         openssl_pkcs7_read($cert_content, $data);
         $certs = $this->certsShorting($data);
-        $this->cert = array_pop($certs);
-        $this->cert = new CertificateContainer($this->cert);
+        $cert = array_pop($certs);
+        $this->cert = new CertificateContainer($cert);
         $this->chain = new ChainContainer($certs);
     }
 
     public function export(): string
     {
-        return $this->pkcs7;
+        return base64_decode((new ExtractorFactory())->extractParts($this->pkcs7, ContentTypesEnum::CONTENTTYPE_PKCS7));
     }
 
+    public function __tostring(): string
+    {
+        return $this->pkcs7;//(new ConverterFactory())->convertFromBinaryToDer($this->export(), ContentTypesEnum::CONTENTTYPE_PKCS7);
+    }
 
     public function getExtension(): string
     {

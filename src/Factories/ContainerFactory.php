@@ -64,6 +64,9 @@ class ContainerFactory
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PKCS8)) {
             return new Pkcs8Container($origin);
         }
+        if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PKCS12)) {
+            return new LockedContainer($origin, Pkcs12Container::class);
+        }
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PUBLIC_KEY)) {
             return new PublicKeyContainer($origin);
         }

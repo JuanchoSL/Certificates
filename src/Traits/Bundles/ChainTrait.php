@@ -2,14 +2,15 @@
 
 namespace JuanchoSL\Certificates\Traits\Bundles;
 
+use JuanchoSL\Certificates\Interfaces\Complex\ChainInterface;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\ChainContainer;
 
 trait ChainTrait
 {
-    protected $chain = [];
+    protected ?ChainInterface $chain = null;
 
-    public function getChain(): ChainContainer
+    public function getChain(): ChainInterface
     {
         return $this->chain;
     }

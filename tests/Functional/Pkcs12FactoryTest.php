@@ -19,6 +19,7 @@ class Pkcs12FactoryTest extends TestCase
         $dir = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data']) . DIRECTORY_SEPARATOR;
         return [
             Pkcs12Container::class => [$dir . 'certificates.p12'],
+            Pkcs12Container::class => [$dir . 'certificates.pfx'],
         ];
     }
 
