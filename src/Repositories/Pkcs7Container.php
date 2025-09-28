@@ -26,7 +26,7 @@ class Pkcs7Container implements
 {
     use StringableTrait, SaveableTrait, ChainTrait, CertificateTrait;
 
-    private $pkcs7 = null;
+    protected $pkcs7 = null;
 
     public function __construct(string $cert_content)
     {

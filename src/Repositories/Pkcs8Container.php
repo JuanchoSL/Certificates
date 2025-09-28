@@ -4,6 +4,7 @@ namespace JuanchoSL\Certificates\Repositories;
 
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Factories\ConverterFactory;
+use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ChainReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
@@ -26,7 +27,7 @@ class Pkcs8Container implements
 
     use PrivateKeyTrait, CertificateTrait, ChainTrait, SaveableTrait;
 
-    private $pkcs8 = null;
+    protected $pkcs8 = null;
 
     public function __construct(string $cert_content)
     {
@@ -54,11 +55,29 @@ class Pkcs8Container implements
         $pk7 = tempnam(sys_get_temp_dir(), 'cms');
         $sigfile = tempnam(sys_get_temp_dir(), 'cms');
         openssl_cms_verify($org_file, OPENSSL_CMS_NOVERIFY | OPENSSL_CMS_BINARY, $crt, [], null, $message, $pk7, $sigfile, OPENSSL_ENCODING_DER);
+        $contents = file_get_contents($message);
+        $extractor = new ExtractorFactory();
+        if (empty($key = $extractor->extractParts($contents, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY))) {
+            $key = $extractor->extractParts($contents, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED);
+        }
+        $this->key = current($key);
+        if ($extractor->readerPart($contents, ContentTypesEnum::CONTENTTYPE_CERTIFICATE)) {
+            $parts = $extractor->extractParts($contents, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
+            if (count($parts) > 0) {
+                $parts = $this->certsShorting($parts, true);
+                $this->cert = new CertificateContainer(array_shift($parts));
+                if (count($parts) > 0) {
+                    $this->chain = new ChainContainer($parts);
+                }
+            }
+        }
+        /*
         $this->key = file_get_contents($message);
         //$this->cert = new CertificateContainer(file_get_contents($crt));
         $publics = new Pkcs7Container((new ConverterFactory())->convertFromPemToBinary(file_get_contents($pk7), ContentTypesEnum::CONTENTTYPE_CMS));
         $this->cert = $publics->getCertificate();
         $this->chain = $publics->getChain();
+        */
         unset($org_file);
         unset($message);
         unset($ca);

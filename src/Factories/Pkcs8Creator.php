@@ -9,6 +9,14 @@ use Stringable;
 
 class Pkcs8Creator extends Pkcs7Creator implements Stringable, SaveableInterface
 {
+    protected $message = '';
+
+    public function setMessage(Stringable $message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+
     public function export()
     {
         if (empty($this->certificate) or empty($this->private)) {
@@ -21,12 +29,13 @@ class Pkcs8Creator extends Pkcs7Creator implements Stringable, SaveableInterface
             $this->extracerts->save($xtra);
         }
 
-        $this->private->save($priv);
+        //$this->private->save($priv);
         $in = tempnam(sys_get_temp_dir(), 'p8b');
+        file_put_contents($in, (string) $this->message);
         $out = tempnam(sys_get_temp_dir(), 'p8b');
-        openssl_cms_sign($priv, $out, $this->certificate->__invoke(), $this->private->__invoke(), [], OPENSSL_CMS_BINARY, $this->encoding, $xtra ?? null);
+        openssl_cms_sign($in, $out, $this->certificate->__invoke(), $this->private->__invoke(), [], OPENSSL_CMS_BINARY, $this->encoding, $xtra ?? null);
         $key = file_get_contents($out);
-        unlink($priv);
+        //unlink($priv);
         if (isset($xtra)) {
             unlink($xtra);
         }
