@@ -51,7 +51,7 @@ class PrivateKeyContainer implements
             throw new ForbiddenException("You need the password to uncrypt this private key");
         }
         $this->setPassword($passphrase);
-        $this->data = openssl_pkey_get_private($fullpath, $this->password);
+        $this->data = openssl_pkey_get_private($fullpath, $this->password?->getValue());
         if ($this->data == false) {
             throw new Exception(openssl_error_string());
         }
@@ -69,7 +69,7 @@ class PrivateKeyContainer implements
 
     public function export(): string
     {
-        openssl_pkey_export($this->data, $out, $this->password);
+        openssl_pkey_export($this->data, $out, $this->password?->getValue());
         return $out;
     }
 
