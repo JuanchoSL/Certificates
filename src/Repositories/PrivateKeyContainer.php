@@ -9,7 +9,6 @@ use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\Complex\PrivateKeyInterface;
 use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
-use JuanchoSL\Certificates\Traits\LoggableTrait;
 use JuanchoSL\Certificates\Traits\PasswordUnprotectableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
@@ -21,7 +20,7 @@ class PrivateKeyContainer implements
     PrivateKeyInterface
 {
 
-    use PasswordUnprotectableTrait, StringableTrait, SaveableTrait, DetailableTrait, LoggableTrait;
+    use PasswordUnprotectableTrait, StringableTrait, SaveableTrait, DetailableTrait;
 
     protected OpenSSLAsymmetricKey $data;
 

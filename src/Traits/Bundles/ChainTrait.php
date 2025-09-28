@@ -12,7 +12,7 @@ trait ChainTrait
 
     public function getChain(): ChainInterface
     {
-        return $this->chain;
+        return $this->chain ?? new ChainContainer([]);
     }
 
     protected function certsShorting($data, bool $desc = true)

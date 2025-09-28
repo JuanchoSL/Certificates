@@ -3,6 +3,7 @@
 namespace JuanchoSL\Certificates\Factories;
 
 use Exception;
+use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\ChainContainer;
@@ -46,7 +47,7 @@ class Pkcs12Creator implements Stringable, SaveableInterface
 
     public function __tostring(): string
     {
-        return (string) $this->export();
+        return (string) (new ConverterFactory())->convertFromBinaryToPem($this->export(), ContentTypesEnum::CONTENTTYPE_PKCS12);
     }
     public function export(): mixed
     {

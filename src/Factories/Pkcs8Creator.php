@@ -42,9 +42,9 @@ class Pkcs8Creator extends Pkcs7Creator implements Stringable, SaveableInterface
         } elseif ($this->encoding == OPENSSL_ENCODING_PEM) {
             return (new ConverterFactory())->convertFromBinaryToPem($this->export(), ContentTypesEnum::CONTENTTYPE_CMS);
         } elseif ($this->encoding == OPENSSL_ENCODING_DER) {
+            return (new ConverterFactory())->convertFromBinaryToDer($this->export(), ContentTypesEnum::CONTENTTYPE_PKCS8);
             return implode("\n", ['-----BEGIN PKCS8-----', base64_encode($this->export()), '-----END PKCS8-----']);
             return $this->export();
-            return (new ConverterFactory())->convertFromBinaryToPem($this->export(), ContentTypesEnum::CONTENTTYPE_CMS);
         } else {
             return base64_encode($this->export());
         }
