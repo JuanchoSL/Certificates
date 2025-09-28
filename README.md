@@ -133,21 +133,21 @@ $new_private = new PrivateKeyContainer($old_private);
 $new_binary_pkcs = (new Pkcs12Creator($description, $can_be_new_password))->setPrivateKey($new_private)->setCertificate($cert)->setChain($chain);
 ```
 
-### Pkcs8 PEM Container [OpenSSL-PKCS8-PEM](https://tecnocratica.net/wikicratica/books/certificados/page/formatos-de-los-certificados)
-
-PEM PKCS8 container is an all in one, multi purpose, with data encoded to base64 ASCII.
-It is a bundle that can includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
-
 ### Pkcs8 Signed Bundle Container [OpenSSL-PKCS8](https://docs.openssl.org/master/man1/openssl-pkcs8/)
 
-Our PKCS8 container is an intermediate between PKCS7 and PKCS12.
-It is a bundle that includes the entire information package (just like PKCS12) signed with the private key (as PKCS7), but without requiring a password for read the contents package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
+PKCS8 container is an intermediate between PKCS7 and PKCS12.
+It is a signed bundle that includes an information package (just like PKCS12) signed with the issuer private key (as PKCS7), used from the CA to send the signed certificates, chain, and, if is necessary, the user private key, but without requiring a password for read all the contents package. The private key can to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard, but not necesary the public certificates.
 
 ### Pkcs7 Signed Bundle Container [OpenSSL-PKCS7](https://docs.openssl.org/master/man1/openssl-pkcs7/)
 
 This is a signed package that includes our public information, certificate, with the public key and optionally our certification chain, in a single file, so that it can be shared and used to verify our signatures or give third parties the possibility of encrypting content that only we, with our private key, can decrypt.
 
 With PHP, we can [export all certificates](https://www.php.net/manual/es/function.openssl-pkcs7-read.php) in a single array, with the library, we can put in separate the user certificate and the CA chain as a collection,
+
+### Pkcs7/Pkcs8/Pkcs12 PEM Container [OpenSSL-PKCS-PEM](https://tecnocratica.net/wikicratica/books/certificados/page/formatos-de-los-certificados)
+
+PEM PKCS containers is an all in one, multi purpose, with data encoded to base64 ASCII.
+It is a bundle that can includes the entire information package (just like PKCS12 for pkcs12 and pkcs8) but without requiring a password for the entire package. It allows the public part (all pkcs7/pkcs8/pkcs12) to be extracted without specifying it, but still allows the private key (not included for pkcs7) to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS standard.
 
 ## Creators
 
@@ -172,13 +172,14 @@ $pkcs12->save($destiny_path); #returns true|false
 
 ### PKCS8
 
-Creates a PKCS8 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for a non empty password, check than the certificate are related and it has been created with the private key
+Creates a PKCS8 container, in order to save all the credentials into an unique repository. The creator check for signer files, private key and certificate, for a non empty password, check than the certificate are related and it has been created with the private key, the, creates a message with the data user certificates to append at the message. If you do not add a message,the signer data has been included, ir order to usa as own repository.
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
 $certificate = new CertificateContainer($certificate_file_or_data);
 $chain = new ChainContainer($chain_file_or_data);
-$pkcs8 = (new Pkcs8Creator)->setPrivateKey($private)->setCertificate($certificate)->setChain($chain)->export();
+$pkcs8 = (new Pkcs8Creator)->setPrivateKey($private)->setCertificate($certificate)->setChain($chain);
+$pkcs8->setMessage($user_data_to_append)->export();
 ```
 
 ### PKCS7
@@ -225,7 +226,7 @@ Actually you have available:
 - createFromUnknow -> Check the data and send to method file, contents or entity
 - createFromFile -> Check the file mimetype and send it to function mimetype if is available, or try to process using contents
 - createFromContents -> Check the contents and send to process as string or binary
-- createFromMimetype -> using the readed mimetype, create an compatible  container for it if is available
+- createFromMimetype -> using the readed mimetype, create an compatible container for it if is available
 - createFromEntity -> if is an standard openssl php function, try to convert. It can use Stream objects using the user mimetype, uploaded path or the stream contents.
 - createFromBinary -> as last chance, try using binary data as Pkcs12 package
 
@@ -233,7 +234,6 @@ Actually you have available:
 $stream = $psr15_server_request->getUploadedFiles()['file']->getStream();
 $container = (new ContainerFactory)->createFromEntity($stream);
 ```
-
 
 ## Interfaces
 
