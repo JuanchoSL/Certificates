@@ -31,7 +31,8 @@ class Pkcs8Creator extends Pkcs7Creator implements Stringable, SaveableInterface
 
         //$this->private->save($priv);
         $in = tempnam(sys_get_temp_dir(), 'p8b');
-        file_put_contents($in, (string) $this->message);
+        $message = (empty($this->message)) ? implode(PHP_EOL, [(string) $this->certificate, (string) $this->extracerts, (string) $this->private]) : (string) $this->message;
+        file_put_contents($in, $message);
         $out = tempnam(sys_get_temp_dir(), 'p8b');
         openssl_cms_sign($in, $out, $this->certificate->__invoke(), $this->private->__invoke(), [], OPENSSL_CMS_BINARY, $this->encoding, $xtra ?? null);
         $key = file_get_contents($out);
