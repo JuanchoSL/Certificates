@@ -14,7 +14,7 @@ class Pkcs8Filler extends Pkcs8Container
 
     public function __construct(#[\SensitiveParameter] PrivateKeyContainer $private)
     {
-        $this->private = $private;
+        $this->key = $private;
     }
 
     public function setCertificate(CertificateContainer $certificate): static
@@ -22,16 +22,16 @@ class Pkcs8Filler extends Pkcs8Container
         $this->cert = $certificate;
         return $this;
     }
-    public function setExtraCertificates(ChainContainer $certificates): static
+    public function setChain(ChainContainer $certificates): static
     {
-        $this->extras = $certificates;
+        $this->chain = $certificates;
         return $this;
     }
 
     public function export(): string
     {
         if (empty($this->pkcs8)) {
-            $this->pkcs8 = (string) (new Pkcs8Creator())->setPrivateKey($this->private)->setCertificate($this->cert)->setExtraCertificates($this->extras);
+            $this->pkcs8 = (string) (new Pkcs8Creator())->setPrivateKey($this->key)->setCertificate($this->cert)->setChain($this->chain);
         }
         return parent::export();
     }

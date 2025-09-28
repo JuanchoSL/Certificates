@@ -46,7 +46,7 @@ class Pkcs12Creator implements Stringable, SaveableInterface
 
     public function __tostring(): string
     {
-        return (string) $this;
+        return (string) $this->export();
     }
     public function export(): mixed
     {

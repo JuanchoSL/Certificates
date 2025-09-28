@@ -45,12 +45,12 @@ class Pkcs12Container extends Pkcs8Container implements
         $this->details = $output;
         $this->key = $this->getDetail('pkey');
         $this->cert = new CertificateContainer($this->getDetail('cert'));
-        $this->extras = new ChainContainer($this->getDetail('extracerts') ?? []);
+        $this->chain = new ChainContainer($this->getDetail('extracerts') ?? []);
     }
 
     public function getPrivateBundle(#[\SensitiveParameter] ?string $passphrase = null): Pkcs8Container
     {
-        return (new Pkcs8Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
+        return (new Pkcs8Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setChain($this->getChain());
     }
 
     public function export(): string

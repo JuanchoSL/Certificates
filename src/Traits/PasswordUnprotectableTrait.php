@@ -2,14 +2,22 @@
 
 namespace JuanchoSL\Certificates\Traits;
 
+use SensitiveParameter;
+use SensitiveParameterValue;
+
 trait PasswordUnprotectableTrait
 {
 
-    protected ?string $password = null;
+    protected ?SensitiveParameterValue $password = null;
 
-    public function setPassword(#[\SensitiveParameter] ?string $password = null): static
+    public function setPassword(#[SensitiveParameter] ?string $password = null): static
     {
-        $this->password = empty($password) ? null : $password;
+        $this->password = (empty($password)) ? null : new SensitiveParameterValue($password);
         return $this;
+    }
+
+    public function isProtected(): bool
+    {
+        return !empty($this->password?->getValue());
     }
 }

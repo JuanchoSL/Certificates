@@ -3,18 +3,20 @@
 namespace JuanchoSL\Certificates\Traits;
 
 use Exception;
+use SensitiveParameter;
+use SensitiveParameterValue;
 
 trait PasswordProtectableTrait
 {
 
-    protected ?string $password = null;
+    protected ?SensitiveParameterValue $password = null;
 
-    public function setPassword(#[\SensitiveParameter] string $password): static
+    public function setPassword(#[SensitiveParameter] string $password): static
     {
         if (empty($password)) {
             throw new Exception("The password can not be empty");
         }
-        $this->password = $password;
+        $this->password = new SensitiveParameterValue($password);
         return $this;
     }
 }

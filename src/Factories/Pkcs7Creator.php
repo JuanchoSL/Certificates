@@ -30,7 +30,7 @@ class Pkcs7Creator implements Stringable, SaveableInterface
         $this->certificate = $certificate;
         return $this;
     }
-    public function setExtraCertificates(ChainContainer $certificates): static
+    public function setChain(ChainContainer $certificates): static
     {
         $this->extracerts = $certificates;
         return $this;
@@ -44,7 +44,7 @@ class Pkcs7Creator implements Stringable, SaveableInterface
         if (!$this->certificate->checkSubjectPrivateKey($this->private)) {
             throw new Exception("The Certificated is not valid for the Private key");
         }
-        if ($this->extracerts->count() > 0) {
+        if (!empty($this->extracerts) && $this->extracerts->count() > 0) {
             $this->extracerts->save($xtra);
         }
         $in = tempnam(sys_get_temp_dir(), 'p7b');

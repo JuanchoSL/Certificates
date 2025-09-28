@@ -11,6 +11,7 @@ use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\PrivateKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
+use JuanchoSL\Certificates\Traits\Bundles\PrivateKeyTrait;
 
 class Pkcs8Container extends Pkcs7Container implements
     ExportableInterface,
@@ -21,6 +22,7 @@ class Pkcs8Container extends Pkcs7Container implements
     FormateableInterface
 {
 
+    use PrivateKeyTrait;
     protected $pkcs8 = null;
     protected $key = null;
 
@@ -59,15 +61,10 @@ class Pkcs8Container extends Pkcs7Container implements
         unset($sigfile);
     }
 
-    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyContainer
-    {
-        return new PrivateKeyContainer($this->key, $password);
-    }
-
     public function getPublicBundle(#[\SensitiveParameter] ?string $passphrase = null): Pkcs7Container
     {
-        //@TODO Needs the pasword? can use the priv key from object or throw exception if it is empty
-        return (new Pkcs7Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setExtraCertificates($this->getChain());
+        //@TODO Needs the password? can use the priv key from object or throw exception if it is empty
+        return (new Pkcs7Filler($this->getPrivateKey($passphrase)))->setCertificate($this->getCertificate())->setChain($this->getChain());
     }
 
     public function export(): string

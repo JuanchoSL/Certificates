@@ -2,6 +2,14 @@
 
 namespace JuanchoSL\Certificates\Tests\Unit;
 
+use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
+use JuanchoSL\Certificates\Interfaces\ChainReadableInterface;
+use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
+use JuanchoSL\Certificates\Interfaces\FormateableInterface;
+use JuanchoSL\Certificates\Interfaces\PasswordUnprotectableInterface;
+use JuanchoSL\Certificates\Interfaces\PrivateKeyReadableInterface;
+use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
@@ -12,6 +20,19 @@ class Pkcs8Test extends TestCase
 {
 
     public function testReadContainer()
+    {
+        $bundle = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data', 'certificates.p8']);
+        $cert = new Pkcs8Container($bundle);
+        $this->assertInstanceOf(CertificateReadableInterface::class, $cert);
+        $this->assertInstanceOf(ChainReadableInterface::class, $cert);
+        $this->assertInstanceOf(ExportableInterface::class, $cert);
+        $this->assertInstanceOf(FormateableInterface::class, $cert);
+        $this->assertInstanceOf(PrivateKeyReadableInterface::class, $cert);
+        $this->assertInstanceOf(SaveableInterface::class, $cert);
+        $this->assertNotInstanceOf(FingerprintReadableInterface::class, $cert);
+        $this->assertNotInstanceOf(PasswordUnprotectableInterface::class, $cert);
+    }
+    public function testReadContainerData()
     {
         $issuer = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data', 'ca.crt']);
         $issuer = new CertificateContainer($issuer);

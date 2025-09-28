@@ -7,6 +7,8 @@ use JuanchoSL\Certificates\Interfaces\ChainReadableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
+use JuanchoSL\Certificates\Traits\Bundles\CertificateTrait;
+use JuanchoSL\Certificates\Traits\Bundles\ChainTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use Stringable;
@@ -19,11 +21,9 @@ class Pkcs7Container implements
     ChainReadableInterface,
     FormateableInterface
 {
-    use StringableTrait, SaveableTrait;
+    use StringableTrait, SaveableTrait, ChainTrait, CertificateTrait;
 
     protected $pkcs7 = null;
-    protected $cert = null;
-    protected $extras;
 
     public function __construct(string $cert_content)
     {
@@ -35,42 +35,10 @@ class Pkcs7Container implements
         }
         $this->pkcs7 = $cert_content;
         openssl_pkcs7_read($cert_content, $data);
-
-        $extras = [];
-        $last = '';
-
-        if (count($data) > 1) {
-            do {
-                foreach ($data as $key => $crt) {
-                    $x509 = openssl_x509_read($crt);
-                    $details = openssl_x509_parse($x509);
-                    $compare = (empty($last)) ? $details['subject']['CN'] : $last;
-                    if ($details['issuer']['CN'] == $compare) {
-                        $extras[] = $crt;
-                        $last = $details['subject']['CN'];
-                        unset($data[$key]);
-                        continue;
-                    }
-                }
-            } while (!empty($data));
-            $cert = array_slice($extras, -1);
-            $extras = array_slice($extras, 0, -1);
-        } else {
-            $cert = $data;
-        }
-        $this->cert = new CertificateContainer(current($cert));
-        $this->extras = new ChainContainer($extras);
-    }
-
-
-    public function getCertificate(): CertificateContainer
-    {
-        return $this->cert;
-    }
-
-    public function getChain(): ChainContainer
-    {
-        return $this->extras;
+        $certs = $this->certsShorting($data);
+        $this->cert = array_pop($certs);
+        $this->cert = new CertificateContainer($this->cert);
+        $this->chain = new ChainContainer($certs);
     }
 
     public function export(): string

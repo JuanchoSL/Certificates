@@ -10,7 +10,7 @@ class SignDkimFactory
 
     const HASHING_ALGORITHM = "rsa-sha256";        // rsa-sha1
     const SIGNING_ALGORITHM = OPENSSL_ALGO_SHA256; // OPENSSL_ALGO_SHA1
-    const DIGEST_ALGORITHM = "sha1";            // sha1
+    const DIGEST_ALGORITHM = "sha256";            // sha1
 
     const CANONICALIZATION = "relaxed/simple";
     const QUERY_METHOD = "dns/txt";
@@ -113,7 +113,7 @@ class SignDkimFactory
         //echo "<pre>" . print_r($parts, true);exit;
         foreach ($parts as $part) {
             if (strlen($part) > 64) {
-                $part = chunk_split($part."; ", 64);
+                $part = chunk_split($part . "; ", 64);
                 $result .= $part;
             } elseif (strlen($line) + strlen($part) > 64) {
                 $result .= "{$line}\r\n";

@@ -1,9 +1,11 @@
-<?php //declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace JuanchoSL\Certificates\Repositories;
 
 use Countable;
 use Iterator;
+use JuanchoSL\Certificates\Enums\ContentTypesEnum;
+use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
@@ -27,14 +29,8 @@ class ChainContainer implements
             if (is_file($fullpath) && file_exists($fullpath)) {
                 $fullpath = file_get_contents($fullpath);
             }
-            preg_match_all('~-----BEGIN CERTIFICATE-----([\r|\n]+)([\w\s=/+]+)([\r|\n]+)-----END CERTIFICATE-----~m', $fullpath, $matches);
-            if (!empty($matches[0])) {
-                $extracerts = [];
-                foreach ($matches[0] as $extracert) {
-                    $extracerts[] = $extracert;
-                }
-                $fullpath = $extracerts;
-            }
+            $extractor = new ExtractorFactory();
+            $fullpath = $extractor->extractParts($fullpath, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
         }
         if (is_iterable($fullpath)) {
             foreach ($fullpath as $extracert) {

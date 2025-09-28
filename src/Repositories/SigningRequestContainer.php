@@ -4,6 +4,8 @@ namespace JuanchoSL\Certificates\Repositories;
 
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FormateableInterface;
+use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
@@ -11,7 +13,7 @@ use JuanchoSL\Certificates\Traits\StringableTrait;
 use OpenSSLCertificateSigningRequest;
 use Stringable;
 
-class SigningRequestContainer implements Stringable, ExportableInterface, SaveableInterface, DetailableInterface
+class SigningRequestContainer implements Stringable, ExportableInterface, SaveableInterface, DetailableInterface, PublicKeyReadableInterface, FormateableInterface
 {
 
     use StringableTrait, SaveableTrait, DetailableTrait;
@@ -40,5 +42,15 @@ class SigningRequestContainer implements Stringable, ExportableInterface, Saveab
     public function export(): mixed
     {
         return $this->data;
+    }
+
+    public function getExtension(): string
+    {
+        return 'p10';//csr
+    }
+
+    public function getMediaType(): string
+    {
+        return 'application/pkcs10';
     }
 }

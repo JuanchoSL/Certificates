@@ -5,6 +5,7 @@ namespace JuanchoSL\Certificates\Repositories;
 use Exception;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
@@ -12,7 +13,7 @@ use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use Stringable;
 
-class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, Stringable, DetailableInterface, FormateableInterface
+class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, Stringable, DetailableInterface, FormateableInterface, FingerprintReadableInterface
 {
 
     use StringableTrait, SaveableTrait, DetailableTrait;
@@ -25,6 +26,7 @@ class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, S
             $fullpath = file_get_contents($fullpath);
         }
         $this->data = $fullpath;
+        $this->details = $this->getDetails();
     }
 
     public function getDetails(): array|false

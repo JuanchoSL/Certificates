@@ -2,6 +2,9 @@
 
 namespace JuanchoSL\Certificates\Factories;
 
+use DateTimeImmutable;
+use JuanchoSL\Certificates\Interfaces\CertificateReadableInterface;
+use JuanchoSL\Certificates\Repositories\CertificateContainer;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 use JuanchoSL\Certificates\Repositories\SigningRequestContainer;
 
@@ -15,5 +18,22 @@ class SigningRequestFactory
             throw new \Exception(openssl_error_string());
         }
         return new SigningRequestContainer($result);
+    }
+
+    public function signSigningRequest(SigningRequestContainer $csr, PrivateKeyContainer|CertificateReadableInterface $ca_signer, DateTimeImmutable|int $days = 365, ?array $config = null, int $serial = 0): CertificateContainer
+    {
+        if ($days instanceof DateTimeImmutable) {
+            $days = intval(ceil(floatval(($days->getTimestamp() - time()) / 86400)));
+        }
+        $certificate = null;
+        if ($ca_signer instanceof PrivateKeyReadableInterface) {
+            $private = $ca_signer->getPrivateKey();
+            $certificate = (string) $ca_signer->getCertificate();
+        }
+        $cert = openssl_csr_sign((string) $csr, $certificate, (string) $private, $days, $config, $serial);
+        if (!$cert) {
+            throw new \Exception(openssl_error_string());
+        }
+        return new CertificateContainer($cert);
     }
 }

@@ -2,7 +2,18 @@
 
 ## Description
 
+This library, is a full tool collections in order to create, read, parse, export, use... all the openssl (and few more) certificates/keys, in order to use for sign/verify and decryp/encrypt emails and documents, connect to SFTP/SSH servers, enable secure sockets and encrypt communications with web, ftp, webocket servers, and more.
+
+The native PHP openssl functions, works from distincts key entry points, some functions require an object, the key contents, file path starting with an **file://**, other do not need it, this library remove the differences, unifying the container instantiation, any one drive the conversion internally, on order to avoid the user adaptations.
+
 ## Install
+
+This public package, is available from composer and from [GitHub](https://github.com/JuanchoSL/Certificate) for zip download
+
+```bash
+composer require juanchosl/certificates
+composer update
+```
 
 ## Containers (Repositories)
 
@@ -122,12 +133,17 @@ $new_private = new PrivateKeyContainer($old_private);
 $new_binary_pkcs = (new Pkcs12Creator($description, $can_be_new_password))->setPrivateKey($new_private)->setCertificate($cert)->setChain($chain);
 ```
 
-### Pkcs8 Bundle Container [OpenSSL-PKCS8](https://docs.openssl.org/master/man1/openssl-pkcs8/)
+### Pkcs8 PEM Container [OpenSSL-PKCS8-PEM](https://tecnocratica.net/wikicratica/books/certificados/page/formatos-de-los-certificados)
+
+PEM PKCS8 container is an all in one, multi purpose, with data encoded to base64 ASCII.
+It is a bundle that can includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
+
+### Pkcs8 Signed Bundle Container [OpenSSL-PKCS8](https://docs.openssl.org/master/man1/openssl-pkcs8/)
 
 Our PKCS8 container is an intermediate between PKCS7 and PKCS12.
-It is a bundle that includes the entire information package (just like PKCS12) but without requiring a password for the entire package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying a unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
+It is a bundle that includes the entire information package (just like PKCS12) signed with the private key (as PKCS7), but without requiring a password for read the contents package. It allows the public part to be extracted without specifying it, but still allows the private key to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS8 standard.
 
-### Pkcs7 Bundle Container [OpenSSL-PKCS7](https://docs.openssl.org/master/man1/openssl-pkcs7/)
+### Pkcs7 Signed Bundle Container [OpenSSL-PKCS7](https://docs.openssl.org/master/man1/openssl-pkcs7/)
 
 This is a signed package that includes our public information, certificate, with the public key and optionally our certification chain, in a single file, so that it can be shared and used to verify our signatures or give third parties the possibility of encrypting content that only we, with our private key, can decrypt.
 
@@ -137,7 +153,7 @@ With PHP, we can [export all certificates](https://www.php.net/manual/es/functio
 
 ### PKCS12
 
-Creates an standar PKCS12 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for an non empty password, check than the certificate are related and it has been created with the private key
+Creates a standard PKCS12 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for an non empty password, check than the certificate are related and it has been created with the private key
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
@@ -156,24 +172,24 @@ $pkcs12->save($destiny_path); #returns true|false
 
 ### PKCS8
 
-Creates an standar PKCS12 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for an non empty password, check than the certificate are related and it has been created with the private key
+Creates a PKCS8 container, in order to save all the credentials into an unique repository. The creator check for required files, private key and certificate, for a non empty password, check than the certificate are related and it has been created with the private key
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
 $certificate = new CertificateContainer($certificate_file_or_data);
 $chain = new ChainContainer($chain_file_or_data);
-$pkcs8 = (new Pkcs8Creator($description, $password))->setPrivateKey($private)->setCertificate($certificate)->setChain($chain)->export();
+$pkcs8 = (new Pkcs8Creator)->setPrivateKey($private)->setCertificate($certificate)->setChain($chain)->export();
 ```
 
 ### PKCS7
 
-Creates an standar PKCS7 container, in order to save all the public credentials signed into an unique repository. The creator check for required files, private key and certificate, check than the .certificate are related and it has been created with the private key.The Private key is required only for sign the bundle, it is not included.
+Creates a standard PKCS7 container, in order to save all the public credentials signed into an unique repository. The creator check for required files, private key and certificate, check than the .certificate are related and it has been created with the private key.The Private key is required only for sign the bundle, it is not included.
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
 $certificate = new CertificateContainer($certificate_file_or_data);
 $chain = new ChainContainer($chain_file_or_data);
-$pkcs7 = (new Pkcs7Creator($description, $password))->setPrivateKey($private)->setCertificate($certificate)->setChain($chain);
+$pkcs7 = (new Pkcs7Creator)->setPrivateKey($private)->setCertificate($certificate)->setChain($chain);
 ```
 
 then you can export it as binary data (DER)
@@ -185,11 +201,72 @@ $binary_pkcs7 = $pkcs7->export();
 export it as ASCII Base64 data with headers BEGIN PKCS7 | END PKCS7
 
 ```php
-$b64_pkcs7 = (string)$pkcs7;
+$b64_pkcs7 = (string) $pkcs7;
 ```
 
 or save into a selected file
 
 ```php
-$pakcs7->save($desired_saving_path);
+$pkcs7->save($desired_saving_path);
 ```
+
+## Readers and Factories
+
+Using factories, you can instantiate containers from few origins and formats, dellegating to the library the container selection, usefull when you can receive distincts types and avoid the user check and control.
+
+### Container Factory
+
+If you can receive data from files or strings and streams, don't needs open and check to select the right container, you can use someone factory that do this work.
+
+> All containers are auto callables except **Pkcs12** or **encrypted primary key**, because its needs a password, the factory try to create a LockedContainer that need to be invoked passing the password por unlock it.
+
+Actually you have available:
+
+- createFromUnknow -> Check the data and send to method file, contents or entity
+- createFromFile -> Check the file mimetype and send it to function mimetype if is available, or try to process using contents
+- createFromContents -> Check the contents and send to process as string or binary
+- createFromMimetype -> using the readed mimetype, create an compatible  container for it if is available
+- createFromEntity -> if is an standard openssl php function, try to convert. It can use Stream objects using the user mimetype, uploaded path or the stream contents.
+- createFromBinary -> as last chance, try using binary data as Pkcs12 package
+
+```php
+$stream = $psr15_server_request->getUploadedFiles()['file']->getStream();
+$container = (new ContainerFactory)->createFromEntity($stream);
+```
+
+
+## Interfaces
+
+- CertificateReadable -> Have a certificate accesible
+- ChainReadable -> Have a certificates collection accesible
+- Detailable -> Have readable details
+- Exportable -> can be exported
+- FingerprintReadable ->have a standard fingerprint calculation accesible
+- Formateable -> have a standar format, extension and mimetype, available por save or download
+- PasswordProtectable -> Is an element with a password required (Pkcs12)
+- PasswordUnprotectable -> Is an element that can be encrypted with a pasword, and can be removed too
+- PrivateKeyReadable -> Have a private key accesible
+- PublicKeyReadable -> Have a public key accesible
+- Saveable -> can be saved into a file
+- Standarizable -> can be converted to native php object
+- Verifyable -> can be verifyed with other key from other container
+- Stringable -> can be exported as string
+
+|                       | Certificate | Chain | Pkcs12 | Pkcs8 | PEM | Pkcs7 | Priv key | Pub key | Pub SSH |
+| --------------------- | :---------: | :---: | :----: | :---: | :-: | :---: | :------: | :-----: | :-----: |
+| CertificateReadable   |             |       |   X    |   X   |     |   X   |          |         |         |
+| ChainReadable         |             |   X   |   X    |   X   |     |   X   |          |         |         |
+| Detailable            |      X      |       |   X    |       |     |       |    X     |    X    |    X    |
+| Exportable            |      X      |       |        |   X   |     |   X   |    X     |    X    |    X    |
+| FingerprintReadable   |      X      |       |        |       |     |       |          |         |    X    |
+| Formateable           |      X      |       |   X    |   X   |     |   X   |    X     |    X    |    X    |
+| PasswordProtectable   |             |       |   X    |       |     |       |          |         |         |
+| PasswordUnprotectable |             |       |        |       |     |       |    X     |         |         |
+| PrivateKeyReadable    |             |       |   X    |   X   |     |       |          |         |         |
+| PublicKeyReadable     |      X      |       |        |       |     |       |    X     |         |         |
+| Saveable              |      X      |   X   |   X    |   X   |     |   X   |    X     |    X    |    X    |
+| Standarizable         |      X      |       |        |       |     |       |    X     |    X    |         |
+| Verifyable            |      X      |       |        |       |     |       |          |         |         |
+| Stringable            |      X      |   X   |        |       |     |   X   |    X     |    X    |    X    |
+| Countable             |             |   X   |        |       |     |       |          |         |         |
+| Iterable              |             |   X   |        |       |     |       |          |         |         |
