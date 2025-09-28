@@ -22,9 +22,11 @@ class CertificateTest extends TestCase
     {
         $dir = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data']) . DIRECTORY_SEPARATOR;
         return [
-            'Cerft' => [$dir . 'ca.crt'],
-            'Certs' => [file_get_contents($dir . 'ca.crt')],
-            'Cert' => [(string) new CertificateContainer($dir . 'ca.crt')],
+            'Certa' => [$dir . 'certificates.der'],
+            'Certb' => [$dir . 'certificates.cer'],
+            'Cert' => [$dir . 'ca.crt'],
+            'Certc' => [file_get_contents($dir . 'ca.crt')],
+            'Certs' => [(string) new CertificateContainer($dir . 'ca.crt')],
             'Bundle7' => [(string) (new Pkcs7Container($dir . 'certificates.p7b'))->getCertificate()],
             'Bundle8' => [(string) (new Pkcs8Container($dir . 'certificates.p8'))->getCertificate()],
             'Bundle12' => [(string) (new Pkcs12Container($dir . 'certificates.p12', getenv('CRYPT_PASSWORD')))->getCertificate()],

@@ -25,6 +25,22 @@ use Psr\Http\Message\StreamInterface;
 class ContainerFactory
 {
 
+    protected $knowed = [
+        "application/pkcs8" => 'p8',
+        "application/pkcs10" => 'p10',
+        "application/pkix-cert" => 'cer',
+        "application/pkix-crl" => 'crl',
+        "application/pkcs7-mime" => 'p7c',
+        "application/x-x509-ca-certificates" => 'der',
+        "application/x-x509-ca-cert" => 'crt',
+        "application/x-x509-user-certificates" => 'cer',
+        "application/x-x509-user-cert" => 'crt',
+        "application/x-pkcs7-crl" => 'crl',
+        "application/x-pem-file" => 'pem',
+        "application/x-pkcs12" => 'p12',
+        "application/x-pkcs7-certificates" => 'p7b',
+        "application/x-pkcs7-certreqresp" => 'p7r'
+    ];
     public function createFromUnknow(mixed $origin)
     {
         if (is_string($origin)) {
@@ -46,7 +62,19 @@ class ContainerFactory
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $origin);
             finfo_close($finfo);
-            return $this->createFromMimetype($origin, $mimetype);
+
+            try {
+                if (
+                    in_array($mimetype, array_keys($this->knowed)) && (str_contains((string) $contents, chr(0)) === false)
+                ) {
+                    return $this->createFromMimetype((string) $contents, $mimetype);
+                } elseif (in_array($ext = pathinfo($origin, PATHINFO_EXTENSION), array_values($this->knowed))) {
+                    $mime = array_search($ext, $this->knowed);
+                    return $this->createFromMimetype((string) $contents, $mime);
+                }
+            } catch (\Exception $e) {
+
+            }
         }
         return $this->createFromContents($contents);
     }
@@ -109,18 +137,31 @@ class ContainerFactory
     }
     public function createFromMimetype($origin, $mimetype)
     {
-        list($mimetype, $charset) = explode(";", $mimetype);
+        list($mimetype) = explode(";", $mimetype);
+        //echo "<pre>".print_r($mimetype,true);exit;
         switch (trim($mimetype)) {
             case 'application/x-x509-ca-certificates':
             case 'application/x-x509-user-certificates':
             case 'application/x-x509-ca-cert':
             case 'application/x-x509-user-cert':
-                return $this->createFromString((string) $origin);
+            case 'application/pkix-cert':
+                if (str_contains($origin, chr(0)) !== false) {
+                    $origin = (new ConverterFactory())->convertFromBinaryToPem($origin, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
+                }
+            case 'application/x-pem-file':
+                return $this->createFromContents((string) $origin);
 
+            case 'application/pkcs7-mime':
             case 'application/x-pkcs7-certificates':
+                if (str_contains($origin, chr(0)) !== false) {
+                    $origin = (new ConverterFactory())->convertFromBinaryToDer($origin, ContentTypesEnum::CONTENTTYPE_PKCS7);
+                }
                 return new Pkcs7Container($origin);
 
             case 'application/pkcs8':
+                if (str_contains($origin, chr(0)) !== false) {
+                    $origin = (new ConverterFactory())->convertFromBinaryToDer($origin, ContentTypesEnum::CONTENTTYPE_PKCS8);
+                }
                 return new Pkcs8Container($origin);
 
             case 'application/x-pkcs12':
@@ -143,27 +184,14 @@ class ContainerFactory
 
             case Stream::class:
             case UploadedFile::class:
-                $knowed = [
-                    "application/pkcs8" => 'p8',
-                    "application/pkcs10" => 'p10',
-                    "application/pkix-cert" => 'cer',
-                    "application/pkix-crl" => 'crl',
-                    "application/pkcs7-mime" => 'p7c',
-                    "application/x-x509-ca-cert" => 'crt',
-                    "application/x-x509-user-cert" => 'crt',
-                    "application/x-pkcs7-crl" => 'crl',
-                    "application/x-pem-file" => 'pem',
-                    "application/x-pkcs12" => 'p12',
-                    "application/x-pkcs7-certificates" => 'p7b',
-                    "application/x-pkcs7-certreqresp" => 'p7r'
-                ];
+
                 try {
                     if (
-                        in_array($origin->getClientMediaType(), array_keys($knowed))
+                        in_array($origin->getClientMediaType(), array_keys($this->knowed)) && (str_contains((string) $origin->getStream(), chr(0)) === false)
                     ) {
                         return $this->createFromMimetype((string) $origin->getStream(), $origin->getClientMediaType());
-                    } elseif (in_array($ext = pathinfo($origin->getClientFilename(), PATHINFO_EXTENSION), array_values($knowed))) {
-                        $mime = array_search($ext, $knowed);
+                    } elseif (in_array($ext = pathinfo($origin->getClientFilename(), PATHINFO_EXTENSION), array_values($this->knowed))) {
+                        $mime = array_search($ext, $this->knowed);
                         return $this->createFromMimetype((string) $origin->getStream(), $mime);
                     }
                     return $this->createFromFile($origin->getStream()->getMetadata('uri'));

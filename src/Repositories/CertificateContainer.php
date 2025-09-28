@@ -24,6 +24,9 @@ class CertificateContainer implements CertificateInterface
         if (is_string($cert_content) && is_file($cert_content) && file_exists($cert_content)) {
             $cert_content = file_get_contents($cert_content);
         }
+        if (str_contains($cert_content, chr(0)) !== false) {
+            $cert_content = (new ConverterFactory())->convertFromBinaryToPem($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
+        }
         $this->data = openssl_x509_read($cert_content);
     }
 

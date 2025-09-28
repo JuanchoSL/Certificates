@@ -15,7 +15,7 @@ trait ChainTrait
         return $this->chain ?? new ChainContainer([]);
     }
 
-    protected function certsShorting($data, bool $desc = true)
+    protected function certsShorting($data, bool $asc = true)
     {
         $extras = [];
         $last = '';
@@ -38,7 +38,7 @@ trait ChainTrait
         } else {
             $extras = $data;
         }
-        if (!$desc) {
+        if ($asc) {
             $extras = array_reverse($extras);
         }
         return $extras;

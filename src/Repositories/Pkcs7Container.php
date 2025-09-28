@@ -41,8 +41,8 @@ class Pkcs7Container implements
         $cert_content = (new ConverterFactory())->convertFromBinaryToDer($cert_content, ContentTypesEnum::CONTENTTYPE_PKCS7);
         $this->pkcs7 = $cert_content;
         openssl_pkcs7_read($cert_content, $data);
-        $certs = $this->certsShorting($data);
-        $cert = array_pop($certs);
+        $certs = $this->certsShorting($data, true);
+        $cert = array_shift($certs);
         $this->cert = new CertificateContainer($cert);
         $this->chain = new ChainContainer($certs);
     }
