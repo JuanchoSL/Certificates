@@ -16,6 +16,8 @@ use JuanchoSL\Certificates\Repositories\PublicSshKeyContainer;
 use JuanchoSL\Certificates\Repositories\SigningRequestContainer;
 use JuanchoSL\Exceptions\NotFoundException;
 use JuanchoSL\Exceptions\UnsupportedMediaTypeException;
+use JuanchoSL\HttpData\Containers\Stream;
+use JuanchoSL\HttpData\Containers\UploadedFile;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
 use Psr\Http\Message\StreamInterface;
@@ -64,6 +66,9 @@ class ContainerFactory
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PKCS8)) {
             return new Pkcs8Container($origin);
         }
+        if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PKCS12)) {
+            return new LockedContainer($origin, Pkcs12Container::class);
+        }
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PUBLIC_KEY)) {
             return new PublicKeyContainer($origin);
         }
@@ -108,7 +113,9 @@ class ContainerFactory
         switch (trim($mimetype)) {
             case 'application/x-x509-ca-certificates':
             case 'application/x-x509-user-certificates':
-                return new CertificateContainer($origin);
+            case 'application/x-x509-ca-cert':
+            case 'application/x-x509-user-cert':
+                return $this->createFromString((string) $origin);
 
             case 'application/x-pkcs7-certificates':
                 return new Pkcs7Container($origin);
@@ -134,31 +141,34 @@ class ContainerFactory
             case OpenSSLAsymmetricKey::class:
                 return new PrivateKeyContainer($origin);
 
-            case StreamInterface::class:
+            case Stream::class:
+            case UploadedFile::class:
+                $knowed = [
+                    "application/pkcs8" => 'p8',
+                    "application/pkcs10" => 'p10',
+                    "application/pkix-cert" => 'cer',
+                    "application/pkix-crl" => 'crl',
+                    "application/pkcs7-mime" => 'p7c',
+                    "application/x-x509-ca-cert" => 'crt',
+                    "application/x-x509-user-cert" => 'crt',
+                    "application/x-pkcs7-crl" => 'crl',
+                    "application/x-pem-file" => 'pem',
+                    "application/x-pkcs12" => 'p12',
+                    "application/x-pkcs7-certificates" => 'p7b',
+                    "application/x-pkcs7-certreqresp" => 'p7r'
+                ];
                 try {
-
                     if (
-                        in_array($origin->getMetadata('uri'), [
-                            "application/pkcs8",
-                            "application/pkcs10",
-                            "application/pkix-cert",
-                            "application/pkix-crl",
-                            "application/pkcs7-mime",
-                            "application/x-x509-ca-cert",
-                            "application/x-x509-user-cert",
-                            "application/x-pkcs7-crl",
-                            "application/x-pem-file",
-                            "application/x-pkcs12",
-                            "application/x-pkcs7-certificates",
-                            "application/x-pkcs7-certreqresp"
-                        ])
+                        in_array($origin->getClientMediaType(), array_keys($knowed))
                     ) {
-                        return $this->createFromMimetype((string) $origin, $origin->getClientMediaType());
+                        return $this->createFromMimetype((string) $origin->getStream(), $origin->getClientMediaType());
+                    } elseif (in_array($ext = pathinfo($origin->getClientFilename(), PATHINFO_EXTENSION), array_values($knowed))) {
+                        $mime = array_search($ext, $knowed);
+                        return $this->createFromMimetype((string) $origin->getStream(), $mime);
                     }
                     return $this->createFromFile($origin->getStream()->getMetadata('uri'));
                 } catch (\Exception $e) {
                     return $this->createFromContents((string) $origin->getStream());
-
                 }
         }
     }

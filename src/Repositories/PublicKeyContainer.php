@@ -2,27 +2,18 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
+use JuanchoSL\Certificates\Enums\ContentTypesEnum;
+use JuanchoSL\Certificates\Factories\ConverterFactory;
 use JuanchoSL\Certificates\Factories\DnsDkimFactory;
 use JuanchoSL\Certificates\Factories\PublicSshFactory;
-use JuanchoSL\Certificates\Interfaces\DetailableInterface;
-use JuanchoSL\Certificates\Interfaces\ExportableInterface;
-use JuanchoSL\Certificates\Interfaces\FormateableInterface;
-use JuanchoSL\Certificates\Interfaces\SaveableInterface;
-use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
+use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
-use Stringable;
 
-class PublicKeyContainer implements
-    DetailableInterface,
-    ExportableInterface,
-    Stringable,
-    SaveableInterface,
-    StandarizableInterface,
-    FormateableInterface
+class PublicKeyContainer implements PublicKeyInterface
 {
 
     use DetailableTrait, StringableTrait, SaveableTrait;
@@ -43,6 +34,11 @@ class PublicKeyContainer implements
     }
 
     public function export(): string
+    {
+        return (new ConverterFactory())->convertFromPemToBinary((string) $this, ContentTypesEnum::CONTENTTYPE_PUBLIC_KEY);
+    }
+
+    public function __tostring(): string
     {
         return $this->getDetail('key');
     }

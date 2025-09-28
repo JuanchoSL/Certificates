@@ -11,6 +11,7 @@ enum ContentTypesEnum: string
     case CONTENTTYPE_PUBLIC_KEY = 'PUBLIC KEY';
     case CONTENTTYPE_PKCS7 = 'PKCS7';
     case CONTENTTYPE_PKCS8 = 'PKCS8';
+    case CONTENTTYPE_PKCS12 = 'PKCS12';
     case CONTENTTYPE_CMS = 'CMS';
 
 }

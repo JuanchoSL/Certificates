@@ -2,6 +2,7 @@
 
 namespace JuanchoSL\Certificates\Traits\Bundles;
 
+use JuanchoSL\Certificates\Interfaces\Complex\PrivateKeyInterface;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 
 trait PrivateKeyTrait
@@ -9,7 +10,7 @@ trait PrivateKeyTrait
 
     protected $key = null;
 
-    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyContainer
+    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyInterface
     {
         return new PrivateKeyContainer($this->key, $password);
     }

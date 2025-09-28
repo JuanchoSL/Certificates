@@ -2,14 +2,14 @@
 
 namespace JuanchoSL\Certificates\Interfaces;
 
-use JuanchoSL\Certificates\Repositories\CertificateContainer;
+use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
 
 interface CertificateReadableInterface
 {
 
     /**
      * Retrieve the included x509 Certificate Container
-     * @return CertificateContainer
+     * @return CertificateInterface
      */
-    public function getCertificate(): CertificateContainer;
+    public function getCertificate(): CertificateInterface;
 }

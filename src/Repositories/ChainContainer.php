@@ -2,26 +2,18 @@
 
 namespace JuanchoSL\Certificates\Repositories;
 
-use Countable;
-use Iterator;
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Factories\ExtractorFactory;
-use JuanchoSL\Certificates\Interfaces\FormateableInterface;
-use JuanchoSL\Certificates\Interfaces\SaveableInterface;
+use JuanchoSL\Certificates\Interfaces\Complex\ChainInterface;
+use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
-use Stringable;
 
-class ChainContainer implements
-    Stringable,
-    Iterator,
-    Countable,
-    SaveableInterface,
-    FormateableInterface
+class ChainContainer implements ChainInterface
 {
 
     use SaveableTrait;
 
-    protected array|CertificateContainer $chain = [];
+    protected array|CertificateInterface $chain = [];
 
     public function __construct(array|string $fullpath)
     {

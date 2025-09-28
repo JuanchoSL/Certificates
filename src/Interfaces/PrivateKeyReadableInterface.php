@@ -2,7 +2,7 @@
 
 namespace JuanchoSL\Certificates\Interfaces;
 
-use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
+use JuanchoSL\Certificates\Interfaces\Complex\PrivateKeyInterface;
 
 interface PrivateKeyReadableInterface
 {
@@ -10,7 +10,7 @@ interface PrivateKeyReadableInterface
     /**
      * Retrieve the included Async Private Key Container
      * @param string $password The password, if needed, in order to open the element
-     * @return PrivateKeyContainer
+     * @return PrivateKeyInterface
      */
-    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyContainer;
+    public function getPrivateKey(#[\SensitiveParameter] ?string $password = null): PrivateKeyInterface;
 }

@@ -45,18 +45,20 @@ class PEMContainer implements
 
         if ($extractor->readerPart($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE)) {
             $certs = $extractor->extractParts($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
-            $certs = $this->certsShorting($certs);
-            $this->cert = new CertificateContainer(array_pop($certs));
-            $this->chain = new ChainContainer($certs);
+            $certs = $this->certsShorting($certs, false);
+            $this->cert = new CertificateContainer(array_shift($certs));
+            if (!empty($certs)) {
+                $this->chain = new ChainContainer($certs);
+            }
         }
     }
 
     public function export(): iterable
     {
         return [
-            (string) $this->key,
             (string) $this->getCertificate(),
-            (string) $this->getChain()
+            (string) $this->getChain(),
+            (string) $this->key
         ];
     }
     public function __tostring(): string
