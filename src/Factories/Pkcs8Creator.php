@@ -14,7 +14,7 @@ class Pkcs8Creator extends Pkcs7Creator implements Stringable, SaveableInterface
         if (empty($this->certificate) or empty($this->private)) {
             throw new Exception("The Private Key and the user Certificate are required");
         }
-        if (!openssl_x509_check_private_key($this->certificate->export(), $this->private->export())) {
+        if (!$this->certificate->checkSubjectPrivateKey($this->private)) {
             throw new Exception("The Certificated is not valid for the Private key");
         }
         if (!empty($this->extracerts) && $this->extracerts->count() > 0) {

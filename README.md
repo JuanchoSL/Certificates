@@ -218,7 +218,7 @@ Using factories, you can instantiate containers from few origins and formats, de
 
 If you can receive data from files or strings and streams, don't needs open and check to select the right container, you can use someone factory that do this work.
 
-> All containers are auto callables **except Pkcs12** or **encrypted primary key**, because its needs a password, the factory try to create a LockedContainer that need to be invoked passing the password por unlock it.
+> All containers are auto callables except **Pkcs12** or **encrypted primary key**, because its needs a password, the factory try to create a LockedContainer that need to be invoked passing the password por unlock it.
 
 Actually you have available:
 

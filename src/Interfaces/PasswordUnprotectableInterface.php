@@ -10,7 +10,7 @@ interface PasswordUnprotectableInterface
      * @param string $password The password, leave blank in order to remove it from container
      * @return static The element
      */
-    public function setPassword(#[\SensitiveParameter] ?string $password = ''): static;
+    public function setPassword(#[\SensitiveParameter] ?string $password = null): static;
 
     /**
      * Check if you have actually setted an empty password, in order to export without protect your private key
