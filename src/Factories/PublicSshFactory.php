@@ -23,7 +23,7 @@ class PublicSshFactory
         } elseif (array_key_exists('rsa', $public)) {
             $key = $this->sshEncodePublicKeyRsa($public) . " {$comment}";
         } else {
-            throw new UnprocessableEntityException("The public key needs to be RSAor DSA");
+            throw new UnprocessableEntityException("The public key needs to be RSA or DSA");
         }
         return new PublicSshKeyContainer($key);
     }

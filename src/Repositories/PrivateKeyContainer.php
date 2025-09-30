@@ -50,6 +50,11 @@ class PrivateKeyContainer implements
         return new PublicKeyContainer($this->getDetail('key'));
     }
 
+    public function getSpkiKey(string $challenge): PublicSpkiKeyContainer
+    {
+        return new PublicSpkiKeyContainer(openssl_spki_new($this->data, $challenge));
+    }
+
     public function getDetails(): array|false
     {
         return $this->details ??= openssl_pkey_get_details($this->data);
