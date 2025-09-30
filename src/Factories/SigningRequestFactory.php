@@ -25,12 +25,13 @@ class SigningRequestFactory
         if ($days instanceof DateTimeImmutable) {
             $days = intval(ceil(floatval(($days->getTimestamp() - time()) / 86400)));
         }
+
         $certificate = null;
         if ($ca_signer instanceof PrivateKeyReadableInterface) {
-            $private = $ca_signer->getPrivateKey();
             $certificate = (string) $ca_signer->getCertificate();
+            $ca_signer = $ca_signer->getPrivateKey();
         }
-        $cert = openssl_csr_sign((string) $csr, $certificate, (string) $private, $days, $config, $serial);
+        $cert = openssl_csr_sign((string) $csr, $certificate, (string) $ca_signer, $days, $config, $serial);
         if (!$cert) {
             throw new \Exception(openssl_error_string());
         }

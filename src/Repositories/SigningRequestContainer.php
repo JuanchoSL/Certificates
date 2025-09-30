@@ -26,7 +26,7 @@ class SigningRequestContainer implements Stringable, ExportableInterface, Saveab
         if (is_string($fullpath) && is_file($fullpath) && file_exists($fullpath) && !str_starts_with($fullpath, 'file://')) {
             $fullpath = 'file://' . $fullpath;
         }
-        openssl_csr_export($fullpath, $data);
+        openssl_csr_export($fullpath, $data, false);
         $this->data = $data;
     }
 

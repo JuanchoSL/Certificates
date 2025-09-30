@@ -15,6 +15,7 @@ use JuanchoSL\Certificates\Traits\Bundles\CertificateTrait;
 use JuanchoSL\Certificates\Traits\Bundles\ChainTrait;
 use JuanchoSL\Certificates\Traits\Bundles\PrivateKeyTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
+use Stringable;
 
 class PEMContainer implements
     ExportableInterface,
@@ -22,7 +23,8 @@ class PEMContainer implements
     CertificateReadableInterface,
     ChainReadableInterface,
     FormateableInterface,
-    SaveableInterface
+    SaveableInterface,
+    Stringable
 {
 
     use SaveableTrait, ChainTrait, PrivateKeyTrait, CertificateTrait;
@@ -46,7 +48,7 @@ class PEMContainer implements
         if ($extractor->readerPart($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE)) {
             $certs = $extractor->extractParts($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
             if (!empty($certs)) {
-                $certs = $this->certsShorting($certs, true);
+                $certs = $this->certsShorting($certs, false);
                 $this->cert = new CertificateContainer(array_shift($certs));
             }
             $this->chain = new ChainContainer($certs);
