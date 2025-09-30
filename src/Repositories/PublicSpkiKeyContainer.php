@@ -5,12 +5,13 @@ namespace JuanchoSL\Certificates\Repositories;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
 use JuanchoSL\Certificates\Interfaces\PublicKeyReadableInterface;
+use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use Stringable;
 
-class PublicSpkiKeyContainer implements PublicKeyReadableInterface, DetailableInterface, Stringable, ExportableInterface
+class PublicSpkiKeyContainer implements PublicKeyReadableInterface, DetailableInterface, Stringable, ExportableInterface, SaveableInterface
 {
 
     use DetailableTrait, StringableTrait, SaveableTrait;
@@ -60,26 +61,10 @@ class PublicSpkiKeyContainer implements PublicKeyReadableInterface, DetailableIn
     public function export(): string
     {
         return base64_decode(preg_replace("/{$this->key}/", '', $this->data));
-        return $this->data;
     }
 
     public function __tostring(): string
     {
         return $this->data;
-    }
-
-    public function __invoke(): mixed
-    {
-        return $this->data;
-    }
-
-    public function getExtension(): string
-    {
-        return 'pub';
-    }
-
-    public function getMediaType(): string
-    {
-        return 'text/plain';
     }
 }
