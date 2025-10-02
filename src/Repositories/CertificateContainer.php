@@ -48,7 +48,7 @@ class CertificateContainer implements CertificateInterface
     }
     public function __tostring(): string
     {
-        openssl_x509_export($this(), $out);
+        openssl_x509_export($this(), $out, false);
         return $out;
     }
 

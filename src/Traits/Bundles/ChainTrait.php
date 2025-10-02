@@ -34,6 +34,9 @@ trait ChainTrait
                         continue;
                     }
                 }
+                if (empty($extras)) {
+                    return $data;
+                }
             } while (!empty($data));
         } else {
             $extras = $data;

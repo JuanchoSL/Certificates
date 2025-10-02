@@ -48,7 +48,7 @@ class PEMContainer implements
         if ($extractor->readerPart($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE)) {
             $certs = $extractor->extractParts($cert_content, ContentTypesEnum::CONTENTTYPE_CERTIFICATE);
             if (!empty($certs)) {
-                $certs = $this->certsShorting($certs, false);
+                $certs = $this->certsShorting($certs, true);
                 $this->cert = new CertificateContainer(array_shift($certs));
             }
             $this->chain = new ChainContainer($certs);

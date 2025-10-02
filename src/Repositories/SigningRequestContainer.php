@@ -37,7 +37,44 @@ class SigningRequestContainer implements Stringable, ExportableInterface, Saveab
 
     public function getDetails(): array|false
     {
-        return $this->details ??= openssl_csr_get_subject($this->data, false);
+        if (is_null($this->details)) {
+            $this->details['subject'] = openssl_csr_get_subject($this->data, false);
+            $this->details['extensions'] = [];
+            preg_match_all("/\s+Requested Extensions:\s+[\.\S\s]+\s+X509v3 (Basic Constraints:\s+[\.\S\s]+[\r|\n]+\s+)X509v3 (Key Usage:\s+[\.\S\s]+[\r\n]+\s+)X509v3 (Subject Alternative Name:\s+[\.\S\s]+[\r|\n]+)\s+(Signature Algorithm:\s+[\s\S\.]+)[\r|\n]+\s+Signature Value:/m", $this->data, $matches);
+            if (!empty(current($matches) && count($matches) > 1)) {
+                for ($i = 1; $i < count($matches); $i++) {
+                    $val = current($matches[$i]);
+                    $val = preg_replace('/[\r|\n]+/m', ' ', $val);
+                    $val = preg_replace('/\s+/', ' ', $val);
+                    foreach (['signatureTypeLN' => 'Signature Algorithm'] as $key => $value) {
+                        if (str_contains($val, $value)) {
+                            $this->details[$key] = trim(str_replace($value . ":", '', $val));
+                        }
+                    }
+                    foreach (['basicConstraints' => 'Basic Constraints', 'keyUsage' => 'Key Usage', 'extendedKeyUsage' => 'Extended Key Usage', 'subjectAltName' => 'Subject Alternative Name'] as $key => $value) {
+                        if (str_contains($val, $value)) {
+                            $this->details['extensions'][$key] = trim(str_replace($value . ":", '', $val));
+                        }
+                    }
+                }
+            }
+            if (isset($this->details['signatureTypeLN'])) {
+                $type = $this->getPublicKey()->getDetail('type');
+                switch ($type) {
+                    case OPENSSL_KEYTYPE_RSA:
+                        $type = 'RSA';
+                        break;
+                    case OPENSSL_KEYTYPE_DSA:
+                        $type = 'DSA';
+                        break;
+                }
+                preg_match("/([a-z]+\d*)\w*{$type}\w/", $this->details['signatureTypeLN'], $matches);
+                if (!empty($matches[1])) {
+                    $this->details['signatureTypeSN'] = strtoupper($type . "-" . $matches[1]);
+                }
+            }
+        }
+        return $this->details;
     }
 
     public function export(): mixed
