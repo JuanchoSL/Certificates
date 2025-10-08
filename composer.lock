@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "11a9d5b79aebe32229003b48684fca84",
+    "content-hash": "2c633bfd8ffed1f2a4245d046eec6710",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -215,19 +215,19 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ukrbublik/openssl_x509_crl.git",
-                "reference": "9490a34de2796e170000f41c907843608de1aa60"
+                "url": "https://github.com/JuanchoSL/openssl_x509_crl.git",
+                "reference": "febcffbe29a3449b9e63e6608f72a5d4ff4c500f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ukrbublik/openssl_x509_crl/zipball/9490a34de2796e170000f41c907843608de1aa60",
-                "reference": "9490a34de2796e170000f41c907843608de1aa60",
+                "url": "https://api.github.com/repos/JuanchoSL/openssl_x509_crl/zipball/febcffbe29a3449b9e63e6608f72a5d4ff4c500f",
+                "reference": "febcffbe29a3449b9e63e6608f72a5d4ff4c500f",
                 "shasum": ""
             },
             "require": {
                 "ext-bcmath": "*",
                 "ext-openssl": "*",
-                "php": ">=5.3.0"
+                "php": ">=7.0"
             },
             "default-branch": true,
             "type": "library",
@@ -236,7 +236,6 @@
                     "Ukrbublik\\openssl_x509_crl\\": "src/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -255,6 +254,7 @@
                 "certificate-authority",
                 "certificate-revocation-lists",
                 "certificates",
+                "certificates",
                 "cryptography",
                 "openssl",
                 "openssl-extension",
@@ -263,10 +263,9 @@
                 "x509"
             ],
             "support": {
-                "issues": "https://github.com/ukrbublik/openssl_x509_crl/issues",
-                "source": "https://github.com/ukrbublik/openssl_x509_crl/tree/1.3"
+                "source": "https://github.com/JuanchoSL/openssl_x509_crl/tree/master"
             },
-            "time": "2019-11-25T18:15:43+00:00"
+            "time": "2024-07-17T01:14:40+00:00"
         }
     ],
     "packages-dev": [
