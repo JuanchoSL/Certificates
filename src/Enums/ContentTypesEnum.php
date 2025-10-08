@@ -13,5 +13,6 @@ enum ContentTypesEnum: string
     case CONTENTTYPE_PKCS8 = 'PKCS8';
     case CONTENTTYPE_PKCS12 = 'PKCS12';
     case CONTENTTYPE_CMS = 'CMS';
+    case CONTENTTYPE_CRL = 'X509 CRL';
 
 }
