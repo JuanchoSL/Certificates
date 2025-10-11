@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2c633bfd8ffed1f2a4245d046eec6710",
+    "content-hash": "37110120b4d1eb9bf3fd6344b3822ccb",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -266,6 +266,57 @@
                 "source": "https://github.com/JuanchoSL/openssl_x509_crl/tree/master"
             },
             "time": "2024-07-17T01:14:40+00:00"
+        },
+        {
+            "name": "vakata/asn1",
+            "version": "2.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vakata/asn1.git",
+                "reference": "0321b4ac90c1616c7e66beb7cd0c8d6cd683d335"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vakata/asn1/zipball/0321b4ac90c1616c7e66beb7cd0c8d6cd683d335",
+                "reference": "0321b4ac90c1616c7e66beb7cd0c8d6cd683d335",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "6.*",
+                "victorjonsson/markdowndocs": "^1.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "vakata\\asn1\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "vakata",
+                    "email": "github@vakata.com",
+                    "homepage": "http://www.vakata.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An ASN1 encoder / decoder",
+            "homepage": "https://github.com/vakata/asn1",
+            "keywords": [
+                "asn1",
+                "vakata"
+            ],
+            "support": {
+                "issues": "https://github.com/vakata/asn1/issues",
+                "source": "https://github.com/vakata/asn1/tree/2.3.3"
+            },
+            "time": "2025-01-31T21:30:50+00:00"
         }
     ],
     "packages-dev": [

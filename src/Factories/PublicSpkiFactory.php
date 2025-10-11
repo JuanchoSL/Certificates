@@ -17,7 +17,6 @@ class PublicSpkiFactory
 
     public function createFromPrivateKeyContainer(PrivateKeyInterface $privateKey, string $challenge): PublicSpkiKeyContainer
     {
-
         return $privateKey->getSpkiKey($challenge);
     }
 

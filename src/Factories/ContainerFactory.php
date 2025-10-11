@@ -13,6 +13,7 @@ use JuanchoSL\Certificates\Repositories\Pkcs8Container;
 use JuanchoSL\Certificates\Repositories\PrivateKeyContainer;
 use JuanchoSL\Certificates\Repositories\PublicKeyContainer;
 use JuanchoSL\Certificates\Repositories\PublicSshKeyContainer;
+use JuanchoSL\Certificates\Repositories\CrlContainer;
 use JuanchoSL\Certificates\Repositories\SigningRequestContainer;
 use JuanchoSL\Exceptions\NotFoundException;
 use JuanchoSL\Exceptions\UnsupportedMediaTypeException;
@@ -20,7 +21,6 @@ use JuanchoSL\HttpData\Containers\Stream;
 use JuanchoSL\HttpData\Containers\UploadedFile;
 use OpenSSLAsymmetricKey;
 use OpenSSLCertificate;
-use Psr\Http\Message\StreamInterface;
 
 class ContainerFactory
 {
@@ -103,6 +103,9 @@ class ContainerFactory
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_CERTIFICATE_REQUEST)) {
             return new SigningRequestContainer($origin);
         }
+        if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_CRL)) {
+            return new CrlContainer($origin);
+        }
         $private = $certificate = $chain = $public = false;
         if ($extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY) or $extractor->readerPart($origin, ContentTypesEnum::CONTENTTYPE_PRIVATE_KEY_ENCRYPTED)) {
             $private = true;
@@ -163,6 +166,12 @@ class ContainerFactory
                     $origin = (new ConverterFactory())->convertFromBinaryToDer($origin, ContentTypesEnum::CONTENTTYPE_PKCS8);
                 }
                 return new Pkcs8Container($origin);
+
+            case 'application/pkix-crl':
+                if (str_contains($origin, chr(0)) !== false) {
+                    $origin = (new ConverterFactory())->convertFromBinaryToPem($origin, ContentTypesEnum::CONTENTTYPE_CRL);
+                }
+                return new CrlContainer($origin);
 
             case 'application/x-pkcs12':
             case 'application/octet-stream':
