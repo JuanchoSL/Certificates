@@ -57,14 +57,14 @@ class CertificateContainer implements CertificateInterface
         return $this->data;
     }
 
-    public function getFingerprint(string $hash): bool|string
+    public function getFingerprint(string $hash, bool $hex): bool|string
     {
         $alloweds = openssl_get_md_methods(true);
         if (!in_array($hash, $alloweds)) {
             throw new Exception("The {$hash} hash is not a valid value");
         }
-        $fingerprint = openssl_x509_fingerprint($this->data, $hash);
-        if ($hash != 'md5') {
+        $fingerprint = openssl_x509_fingerprint($this->data, $hash, !$hex);
+        if ($hash != 'md5' && !$hex) {
             $fingerprint = base64_encode($fingerprint);
         }
         return $fingerprint;

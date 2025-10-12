@@ -6,13 +6,15 @@ use Countable;
 use DateTime;
 use DateTimeInterface;
 use Iterator;
+use Stringable;
 use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
+use JuanchoSL\Certificates\Traits\FingerprintTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
-use Stringable;
 use JuanchoSL\Certificates\Enums\RevokeReasonsEnum;
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Factories\ConverterFactory;
@@ -21,9 +23,10 @@ use JuanchoSL\Certificates\Traits\StringableTrait;
 use Ukrbublik\openssl_x509_crl\X509;
 use vakata\asn1\structures\CRL;
 
-class CrlContainer implements Iterator, Countable, Stringable, DetailableInterface, SaveableInterface, ExportableInterface
+class CrlContainer implements Iterator, Countable, Stringable, DetailableInterface, SaveableInterface, ExportableInterface, FingerprintReadableInterface
 {
-    use IterableTrait, StringableTrait, DetailableTrait, SaveableTrait;
+    use IterableTrait, StringableTrait, DetailableTrait, SaveableTrait, FingerprintTrait;
+
     protected array $certs = [];
     protected string $data;
     protected int $number = 0;

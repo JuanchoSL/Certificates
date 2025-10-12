@@ -4,12 +4,13 @@ namespace JuanchoSL\Certificates\Interfaces\Complex;
 
 use JuanchoSL\Certificates\Interfaces\DetailableInterface;
 use JuanchoSL\Certificates\Interfaces\ExportableInterface;
+use JuanchoSL\Certificates\Interfaces\FingerprintReadableInterface;
 use JuanchoSL\Certificates\Interfaces\FormateableInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Interfaces\StandarizableInterface;
 use Stringable;
 
-interface PublicKeyInterface extends DetailableInterface, ExportableInterface, SaveableInterface, StandarizableInterface, FormateableInterface, Stringable
+interface PublicKeyInterface extends DetailableInterface, ExportableInterface, SaveableInterface, StandarizableInterface, FormateableInterface, Stringable, FingerprintReadableInterface
 {
 
 }

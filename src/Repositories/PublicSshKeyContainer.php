@@ -40,7 +40,7 @@ class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, S
         return $this->data;
     }
 
-    public function getFingerprint(string $algo): bool|string
+    public function getFingerprint(string $algo, bool $hex): bool|string
     {
         $alloweds = openssl_get_md_methods();
         if (!in_array($algo, $alloweds)) {
@@ -51,8 +51,8 @@ class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, S
         if (in_array($algo, ['md5'])) {
             $fingerprint = openssl_digest($key, $algo);
         } else {
-            if (($digest = openssl_digest($key, $algo, true)) !== false) {
-                $fingerprint = base64_encode($digest);
+            if (($fingerprint = openssl_digest($key, $algo, !$hex)) !== false && !$hex) {
+                $fingerprint = base64_encode($fingerprint);
             }
         }
         return $fingerprint ?? false;
