@@ -15,7 +15,12 @@ class CrlFiller extends CrlContainer implements Iterator, Countable, Stringable
 
     public function addRevocation(CertificateInterface $cert, DateTimeInterface $revoke_time, ?RevokeReasonsEnum $revoke_reason = null): static
     {
-        $this->certs[] = [
+        if (!$this->updated) {
+            $this->number += 1;
+            $this->updated = true;
+        }
+
+        $this->iterable[] = [
             'cert' => $cert,
             'rev_date' => $revoke_time,
             'reason' => $revoke_reason ?? RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED

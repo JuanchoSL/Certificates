@@ -27,10 +27,25 @@ class CrlCreator implements Stringable, SaveableInterface
     protected int $crl_number = 1;
     protected ?int $days_next_crl = null;
 
-    public function __construct(int $crl_number, ?int $days_next_crl = null)
+    protected iterable $options = [
+        self::CRL_OPTION_DAYS_TO_NEXT => 7,
+        self::CRL_OPTION_DISTRIBUTION_FRESH => '',
+        self::CRL_OPTION_NUMBER => 1,
+        self::CRL_OPTION_SIGN_ALGORITHM => OPENSSL_ALGO_SHA256
+    ];
+
+    const CRL_OPTION_NUMBER = 'crl_number';
+    const CRL_OPTION_DAYS_TO_NEXT = 'days_next_crl';
+    const CRL_OPTION_DISTRIBUTION_FRESH = 'freshest_crl';
+    const CRL_OPTION_SIGN_ALGORITHM = 'algo';
+
+    public function __construct(iterable $options)
     {
-        $this->crl_number = $crl_number;
-        $this->days_next_crl = $days_next_crl;
+        foreach ($options as $option => $value) {
+            if (array_key_exists($option, $this->options)) {
+                $this->options[$option] = $value;
+            }
+        }
     }
 
     public function setPrivateKey(#[\SensitiveParameter] PrivateKeyInterface $private): static
@@ -48,6 +63,7 @@ class CrlCreator implements Stringable, SaveableInterface
     public function setCertificates(CrlContainer $revoked_certs): static
     {
         $this->revoked_certs = $revoked_certs;
+        $this->options[self::CRL_OPTION_NUMBER] = $revoked_certs->getNumber();
         return $this;
     }
 
@@ -60,29 +76,27 @@ class CrlCreator implements Stringable, SaveableInterface
             throw new PreconditionFailedException("The private key is not referred to this certificate");
         }
         $ci = [
-            'no' => $this->crl_number,
+            'no' => $this->options[self::CRL_OPTION_NUMBER],
             'version' => 2,
-            'alg' => OPENSSL_ALGO_SHA256,
+            'alg' => $this->options[self::CRL_OPTION_SIGN_ALGORITHM],
             'revoked' => []
         ];
-        if (!is_null($this->days_next_crl) && is_int($this->days_next_crl)) {
-            $ci['days'] = $this->days_next_crl;
+        if (!is_null($this->options[self::CRL_OPTION_DISTRIBUTION_FRESH]) && filter_var($this->options[self::CRL_OPTION_DISTRIBUTION_FRESH], FILTER_VALIDATE_URL)) {
+            $ci['freshest_crl'] = $this->options[self::CRL_OPTION_DISTRIBUTION_FRESH];
+        }
+        if (!is_null($this->options[self::CRL_OPTION_DAYS_TO_NEXT]) && is_int($this->options[self::CRL_OPTION_DAYS_TO_NEXT])) {
+            $ci['days'] = $this->options[self::CRL_OPTION_DAYS_TO_NEXT];
         }
         if (!empty($this->revoked_certs) && $this->revoked_certs->count() > 0) {
             foreach ($this->revoked_certs as $revoked_cert) {
-                $revoked_cert['reason'] ??= RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED;
                 $temp = array(
-                    'serial' => (is_string($revoked_cert['cert'])) ? hexdec($revoked_cert['cert']) : $revoked_cert['cert']->getDetail('serialNumber'),
-                    'rev_date' => $revoked_cert['rev_date']->getTimestamp(),
+                    'serial' => intval((is_string($revoked_cert['cert'])) ? hexdec($revoked_cert['cert']) : $revoked_cert['cert']->getDetail('serialNumber')),
+                    'rev_date' => intval($revoked_cert['rev_date']->getTimestamp()),
                     'compr_date' => strtotime("-1 day"),
-                    'reason' => X509::getRevokeReasonCodeByName($revoked_cert['reason']->value),
+                    'reason' => intval(X509::getRevokeReasonCodeByName(($revoked_cert['reason'] == RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED) ? null : $revoked_cert['reason']->value)),
                     'hold_instr' => null
                 );
-                /*
-                if (!empty($revoked_cert['reason'])) {
-                    $temp['reason'] = X509::getRevokeReasonCodeByName($revoked_cert['reason']->value);
-                }
-                */
+
                 $ci['revoked'][] = $temp;
             }
         }
