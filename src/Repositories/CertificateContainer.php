@@ -116,4 +116,10 @@ class CertificateContainer implements CertificateInterface
     {
         return openssl_x509_check_private_key($this->data, $private());
     }
+
+    public function checkInTime(): bool
+    {
+        $time = time();
+        return ($this->getDetail('validFrom_time_t') < $time && $this->getDetail('validTo_time_t') > $time);
+    }
 }

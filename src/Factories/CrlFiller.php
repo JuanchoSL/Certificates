@@ -6,11 +6,13 @@ use Countable;
 use DateTimeInterface;
 use Iterator;
 use Stringable;
+use JuanchoSL\Certificates\Interfaces\DetailableInterface;
+use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Repositories\CrlContainer;
 use JuanchoSL\Certificates\Enums\RevokeReasonsEnum;
 use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
 
-class CrlFiller extends CrlContainer implements Iterator, Countable, Stringable
+class CrlFiller extends CrlContainer implements Iterator, Countable, Stringable, SaveableInterface, DetailableInterface
 {
 
     public function addRevocation(CertificateInterface $cert, DateTimeInterface $revoke_time, ?RevokeReasonsEnum $revoke_reason = null): static
@@ -19,13 +21,7 @@ class CrlFiller extends CrlContainer implements Iterator, Countable, Stringable
             $this->number += 1;
             $this->updated = true;
         }
-
-        $this->iterable[] = [
-            'cert' => $cert,
-            'rev_date' => $revoke_time,
-            'reason' => $revoke_reason ?? RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED
-        ];
-        return $this;
+        return $this->appendConvertedData($cert->getDetail('serialNumber'), $revoke_time, $revoke_reason ?? RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED);
     }
 
 }
