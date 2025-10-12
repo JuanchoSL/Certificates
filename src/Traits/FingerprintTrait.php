@@ -13,12 +13,8 @@ trait FingerprintTrait
             throw new Exception("The {$algo} hashing algorithm is not a valid value");
         }
         $key = $this->export();
-        if (in_array($algo, ['md5'])) {
-            $fingerprint = openssl_digest($key, $algo);
-        } else {
-            if (($fingerprint = openssl_digest($key, $algo, !$hex)) !== false && !$hex) {
-                $fingerprint = base64_encode($fingerprint);
-            }
+        if (($fingerprint = openssl_digest($key, $algo, !$hex)) !== false && !$hex) {
+            $fingerprint = base64_encode($fingerprint);
         }
         return $fingerprint ?? false;
     }

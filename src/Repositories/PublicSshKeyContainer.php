@@ -48,12 +48,8 @@ class PublicSshKeyContainer implements ExportableInterface, SaveableInterface, S
         }
         preg_match('~ssh-(\w+)\s([\w=/+]+)\s*~m', $this->data, $matches);
         $key = base64_decode($matches[2]);
-        if (in_array($algo, ['md5'])) {
-            $fingerprint = openssl_digest($key, $algo);
-        } else {
-            if (($fingerprint = openssl_digest($key, $algo, !$hex)) !== false && !$hex) {
-                $fingerprint = base64_encode($fingerprint);
-            }
+        if (($fingerprint = openssl_digest($key, $algo, !$hex)) !== false && !$hex) {
+            $fingerprint = base64_encode($fingerprint);
         }
         return $fingerprint ?? false;
     }

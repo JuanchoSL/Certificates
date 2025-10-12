@@ -302,8 +302,8 @@ $container = (new ContainerFactory)->createFromEntity($stream);
 | ChainReadable         |             |   X   |   X    |   X   |     |   X   |          |         |         |     |
 | Detailable            |      X      |       |   X    |       |     |       |    X     |    X    |    X    |  X  |
 | Exportable            |      X      |       |        |   X   |     |   X   |    X     |    X    |    X    |  X  |
-| FingerprintReadable   |      X      |       |        |       |     |       |          |         |    X    |  X  |
-| Formateable           |      X      |       |   X    |   X   |     |   X   |    X     |    X    |    X    |     |
+| FingerprintReadable   |      X      |       |        |       |     |       |          |    X    |    X    |  X  |
+| Formateable           |      X      |       |   X    |   X   |     |   X   |    X     |    X    |    X    |  X  |
 | PasswordProtectable   |             |       |   X    |       |     |       |          |         |         |     |
 | PasswordUnprotectable |             |       |        |       |     |       |    X     |         |         |     |
 | PrivateKeyReadable    |             |       |   X    |   X   |     |       |          |         |         |     |

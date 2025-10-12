@@ -64,7 +64,7 @@ class CertificateContainer implements CertificateInterface
             throw new Exception("The {$hash} hash is not a valid value");
         }
         $fingerprint = openssl_x509_fingerprint($this->data, $hash, !$hex);
-        if ($hash != 'md5' && !$hex) {
+        if (!$hex) {
             $fingerprint = base64_encode($fingerprint);
         }
         return $fingerprint;
