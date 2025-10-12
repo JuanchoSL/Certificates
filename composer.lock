@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "277d0fa08322ba7a0c2da454615ee824",
+    "content-hash": "66c6478402a4972315d685d521ed16ea",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -159,6 +159,164 @@
                 "source": "https://github.com/JuanchoSL/Validators/tree/1.0.5"
             },
             "time": "2025-05-26T06:38:41+00:00"
+        },
+        {
+            "name": "psr/log",
+            "version": "3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+                "reference": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/3.0.2"
+            },
+            "time": "2024-09-11T13:17:53+00:00"
+        },
+        {
+            "name": "ukrbublik/openssl_x509_crl",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JuanchoSL/openssl_x509_crl.git",
+                "reference": "febcffbe29a3449b9e63e6608f72a5d4ff4c500f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JuanchoSL/openssl_x509_crl/zipball/febcffbe29a3449b9e63e6608f72a5d4ff4c500f",
+                "reference": "febcffbe29a3449b9e63e6608f72a5d4ff4c500f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "ext-openssl": "*",
+                "php": ">=7.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Ukrbublik\\openssl_x509_crl\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ukrbublik",
+                    "email": "ukrbublik@gmail.com"
+                }
+            ],
+            "description": "Missing OpenSSL function on PHP to create CRL (certificate revocation list) for CA",
+            "homepage": "https://github.com/ukrbublik/openssl_x509_crl",
+            "keywords": [
+                "asn.1",
+                "asn1",
+                "certificate",
+                "certificate-authority",
+                "certificate-revocation-lists",
+                "certificates",
+                "certificates",
+                "cryptography",
+                "openssl",
+                "openssl-extension",
+                "php",
+                "x.509",
+                "x509"
+            ],
+            "support": {
+                "source": "https://github.com/JuanchoSL/openssl_x509_crl/tree/master"
+            },
+            "time": "2024-07-17T01:14:40+00:00"
+        },
+        {
+            "name": "vakata/asn1",
+            "version": "2.3.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vakata/asn1.git",
+                "reference": "0321b4ac90c1616c7e66beb7cd0c8d6cd683d335"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vakata/asn1/zipball/0321b4ac90c1616c7e66beb7cd0c8d6cd683d335",
+                "reference": "0321b4ac90c1616c7e66beb7cd0c8d6cd683d335",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "6.*",
+                "victorjonsson/markdowndocs": "^1.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "vakata\\asn1\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "vakata",
+                    "email": "github@vakata.com",
+                    "homepage": "http://www.vakata.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "An ASN1 encoder / decoder",
+            "homepage": "https://github.com/vakata/asn1",
+            "keywords": [
+                "asn1",
+                "vakata"
+            ],
+            "support": {
+                "issues": "https://github.com/vakata/asn1/issues",
+                "source": "https://github.com/vakata/asn1/tree/2.3.3"
+            },
+            "time": "2025-01-31T21:30:50+00:00"
         }
     ],
     "packages-dev": [
@@ -231,6 +389,316 @@
                 }
             ],
             "time": "2022-12-30T00:23:10+00:00"
+        },
+        {
+            "name": "juanchosl/datatransfer",
+            "version": "1.0.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JuanchoSL/DataTransfer.git",
+                "reference": "0775acd2d2d359924ec1057768ca4353abffa790"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JuanchoSL/DataTransfer/zipball/0775acd2d2d359924ec1057768ca4353abffa790",
+                "reference": "0775acd2d2d359924ec1057768ca4353abffa790",
+                "shasum": ""
+            },
+            "require": {
+                "composer-runtime-api": "^2.2",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "juanchosl/exceptions": "1.0.*",
+                "juanchosl/httpheaders": "1.0.*",
+                "juanchosl/validators": "1.0.*",
+                "php": "^8.1",
+                "psr/http-server-handler": "1.0.*"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "1.12.*",
+                "phpunit/phpunit": "9.6.*"
+            },
+            "suggest": {
+                "ext-xlswriter": "*",
+                "ext-yaml": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JuanchoSL\\DataTransfer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Juan Sánchez Lecegui",
+                    "email": "JuanchoSL@hotmail.com",
+                    "homepage": "https://github.com/JuanchoSL/"
+                }
+            ],
+            "description": "A small, lightweight utility to read values and properties from distinct sources using the same methodology",
+            "homepage": "https://github.com/JuanchoSL/DataTransfer",
+            "keywords": [
+                "array",
+                "csv",
+                "data converter",
+                "data transfer objects",
+                "dto",
+                "entity",
+                "file contents",
+                "ini",
+                "json",
+                "object",
+                "simplexmlelement",
+                "values",
+                "xlsx",
+                "xml",
+                "yaml"
+            ],
+            "support": {
+                "source": "https://github.com/JuanchoSL/DataTransfer/tree/1.0.11"
+            },
+            "time": "2025-06-16T15:58:01+00:00"
+        },
+        {
+            "name": "juanchosl/httpdata",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JuanchoSL/HttpData.git",
+                "reference": "71f0a27c43ac326b5d62bd036756eaafff4a780b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JuanchoSL/HttpData/zipball/71f0a27c43ac326b5d62bd036756eaafff4a780b",
+                "reference": "71f0a27c43ac326b5d62bd036756eaafff4a780b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "fig/http-message-util": "1.1.*",
+                "juanchosl/exceptions": "1.0.*",
+                "juanchosl/httpheaders": "1.0.*",
+                "php": "^8.1",
+                "psr/http-client": "1.0.*",
+                "psr/http-factory": "1.1.*",
+                "psr/http-message": "2.0.*"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "1.12.*",
+                "phpunit/phpunit": "9.6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JuanchoSL\\HttpData\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Juan Sánchez Lecegui",
+                    "email": "JuanchoSL@hotmail.com",
+                    "homepage": "https://github.com/JuanchoSL/"
+                }
+            ],
+            "description": "Little methods collection in order to create http request and responses using the PSR standards from PHP-FIG definitions",
+            "homepage": "https://github.com/JuanchoSL/httpdata",
+            "keywords": [
+                "http",
+                "message",
+                "psr17",
+                "psr18",
+                "psr7",
+                "request",
+                "response",
+                "stream",
+                "uri"
+            ],
+            "support": {
+                "source": "https://github.com/JuanchoSL/HttpData/tree/1.0.5"
+            },
+            "time": "2025-10-07T15:32:38+00:00"
+        },
+        {
+            "name": "juanchosl/httpheaders",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JuanchoSL/HttpHeaders.git",
+                "reference": "e599267c674a6295617ebf6c400fe69972a6343a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JuanchoSL/HttpHeaders/zipball/e599267c674a6295617ebf6c400fe69972a6343a",
+                "reference": "e599267c674a6295617ebf6c400fe69972a6343a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": "^7.1 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "1.10.*",
+                "phpunit/phpunit": "9.6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JuanchoSL\\HttpHeaders\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Juan Sánchez Lecegui",
+                    "email": "JuanchoSL@hotmail.com",
+                    "homepage": "https://github.com/JuanchoSL/"
+                }
+            ],
+            "description": "Little methods collection in order to create http headers",
+            "homepage": "https://github.com/JuanchoSL/HttpHeaders",
+            "keywords": [
+                "content types",
+                "file extensions",
+                "headers",
+                "http",
+                "mime types"
+            ],
+            "support": {
+                "source": "https://github.com/JuanchoSL/HttpHeaders/tree/1.0.1"
+            },
+            "time": "2025-06-06T23:49:10+00:00"
+        },
+        {
+            "name": "juanchosl/logger",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JuanchoSL/Logger.git",
+                "reference": "0c1ef10dfb9d617fab09534e8e4997d247fb262e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JuanchoSL/Logger/zipball/0c1ef10dfb9d617fab09534e8e4997d247fb262e",
+                "reference": "0c1ef10dfb9d617fab09534e8e4997d247fb262e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "ext-mbstring": "*",
+                "php": "^8.1",
+                "psr/log": "3.0.*"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "9.6.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JuanchoSL\\Logger\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Juan Sánchez Lecegui",
+                    "email": "JuanchoSL@hotmail.com",
+                    "homepage": "https://github.com/JuanchoSL/"
+                }
+            ],
+            "description": "Little logger using the PSR interfaces",
+            "homepage": "https://github.com/JuanchoSL/Logger",
+            "keywords": [
+                "debug",
+                "log"
+            ],
+            "support": {
+                "source": "https://github.com/JuanchoSL/Logger/tree/1.1.2"
+            },
+            "time": "2025-07-29T13:21:09+00:00"
+        },
+        {
+            "name": "juanchosl/requestlistener",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/JuanchoSL/RequestListener.git",
+                "reference": "835ae62c940102a581f1d6ad256227d9a654e474"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/JuanchoSL/RequestListener/zipball/835ae62c940102a581f1d6ad256227d9a654e474",
+                "reference": "835ae62c940102a581f1d6ad256227d9a654e474",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "fig/http-message-util": "1.1.*",
+                "juanchosl/datatransfer": "1.0.*",
+                "juanchosl/exceptions": "1.0.*",
+                "juanchosl/httpdata": "1.0.*",
+                "juanchosl/logger": "1.1.*",
+                "php": "^8.1",
+                "psr/container": "2.0.*",
+                "psr/http-server-handler": "1.0.*",
+                "psr/http-server-middleware": "1.0.*",
+                "psr/log": "3.0.*"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "1.10.*",
+                "phpunit/phpunit": "9.6.*"
+            },
+            "suggest": {
+                "juanchosl/logger": "^1.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "JuanchoSL\\RequestListener\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Juan Sánchez Lecegui",
+                    "email": "JuanchoSL@hotmail.com",
+                    "homepage": "https://github.com/JuanchoSL/"
+                }
+            ],
+            "description": "Little methods collection in order to create an APP listener, that can be able to receive, process and response to http request and cli commands",
+            "homepage": "https://github.com/JuanchoSL/RequestListener",
+            "keywords": [
+                "console",
+                "http",
+                "message",
+                "request",
+                "response",
+                "stream",
+                "terminal",
+                "uri",
+                "use cases"
+            ],
+            "support": {
+                "source": "https://github.com/JuanchoSL/RequestListener/tree/master"
+            },
+            "time": "2025-09-22T11:20:17+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -470,16 +938,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.31",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phpstan/phpstan-phar-composer-source.git",
-                "reference": "git1"
-            },
+            "version": "1.12.32",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/a7630bb5311a41d13a2364634c78c5f4da250d53",
-                "reference": "a7630bb5311a41d13a2364634c78c5f4da250d53",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/2770dcdf5078d0b0d53f94317e06affe88419aa8",
+                "reference": "2770dcdf5078d0b0d53f94317e06affe88419aa8",
                 "shasum": ""
             },
             "require": {
@@ -524,7 +987,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-24T15:58:55+00:00"
+            "time": "2025-09-30T10:16:31+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -955,6 +1418,332 @@
                 }
             ],
             "time": "2025-09-24T06:29:11+00:00"
+        },
+        {
+            "name": "psr/container",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/container.git",
+                "reference": "c71ecc56dfe541dbd90c5360474fbc405f8d5963"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/container/zipball/c71ecc56dfe541dbd90c5360474fbc405f8d5963",
+                "reference": "c71ecc56dfe541dbd90c5360474fbc405f8d5963",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Container\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common Container Interface (PHP FIG PSR-11)",
+            "homepage": "https://github.com/php-fig/container",
+            "keywords": [
+                "PSR-11",
+                "container",
+                "container-interface",
+                "container-interop",
+                "psr"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/container/issues",
+                "source": "https://github.com/php-fig/container/tree/2.0.2"
+            },
+            "time": "2021-11-05T16:47:00+00:00"
+        },
+        {
+            "name": "psr/http-client",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-client.git",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-client/zipball/bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0 || ^8.0",
+                "psr/http-message": "^1.0 || ^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP clients",
+            "homepage": "https://github.com/php-fig/http-client",
+            "keywords": [
+                "http",
+                "http-client",
+                "psr",
+                "psr-18"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-client"
+            },
+            "time": "2023-09-23T14:17:50+00:00"
+        },
+        {
+            "name": "psr/http-factory",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-factory.git",
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
+                "reference": "2b4765fddfe3b508ac62f829e852b1501d3f6e8a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1",
+                "psr/http-message": "^1.0 || ^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "PSR-17: Common interfaces for PSR-7 HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-factory"
+            },
+            "time": "2024-04-15T12:06:14+00:00"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "402d35bcb92c70c026d1a6a9883f06b2ead23d71"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/402d35bcb92c70c026d1a6a9883f06b2ead23d71",
+                "reference": "402d35bcb92c70c026d1a6a9883f06b2ead23d71",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/2.0"
+            },
+            "time": "2023-04-04T09:54:51+00:00"
+        },
+        {
+            "name": "psr/http-server-handler",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-handler.git",
+                "reference": "84c4fb66179be4caaf8e97bd239203245302e7d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/84c4fb66179be4caaf8e97bd239203245302e7d4",
+                "reference": "84c4fb66179be4caaf8e97bd239203245302e7d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0 || ^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side request handler",
+            "keywords": [
+                "handler",
+                "http",
+                "http-interop",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response",
+                "server"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-server-handler/tree/1.0.2"
+            },
+            "time": "2023-04-10T20:06:20+00:00"
+        },
+        {
+            "name": "psr/http-server-middleware",
+            "version": "1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-middleware.git",
+                "reference": "c1481f747daaa6a0782775cd6a8c26a1bf4a3829"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/c1481f747daaa6a0782775cd6a8c26a1bf4a3829",
+                "reference": "c1481f747daaa6a0782775cd6a8c26a1bf4a3829",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0 || ^2.0",
+                "psr/http-server-handler": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side middleware",
+            "keywords": [
+                "http",
+                "http-interop",
+                "middleware",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-middleware/issues",
+                "source": "https://github.com/php-fig/http-server-middleware/tree/1.0.2"
+            },
+            "time": "2023-04-11T06:14:47+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2020,11 +2809,14 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "juanchosl/requestlistener": 20,
+        "ukrbublik/openssl_x509_crl": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0",
+        "php": "^8.2",
         "ext-openssl": "*"
     },
     "platform-dev": {},

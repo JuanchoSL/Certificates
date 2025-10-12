@@ -5,15 +5,13 @@ namespace JuanchoSL\Certificates\Repositories;
 use JuanchoSL\Certificates\Enums\ContentTypesEnum;
 use JuanchoSL\Certificates\Factories\ExtractorFactory;
 use JuanchoSL\Certificates\Interfaces\Complex\ChainInterface;
-use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
+use JuanchoSL\Certificates\Traits\IterableTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 
 class ChainContainer implements ChainInterface
 {
 
-    use SaveableTrait;
-
-    protected array|CertificateInterface $chain = [];
+    use SaveableTrait, IterableTrait;
 
     public function __construct(array|string $fullpath)
     {
@@ -26,51 +24,25 @@ class ChainContainer implements ChainInterface
         }
         if (is_iterable($fullpath)) {
             foreach ($fullpath as $extracert) {
-                $this->chain[] = new CertificateContainer($extracert);
+                $this->iterable[] = new CertificateContainer($extracert);
             }
         }
         $this->rewind();
     }
 
-    function rewind(): void
-    {
-        reset($this->chain);
-    }
-    function current(): mixed
-    {
-        return current($this->chain);
-    }
-    function key(): int|string|null
-    {
-        return key($this->chain);
-    }
-    function next(): void
-    {
-        next($this->chain);
-    }
-    function valid(): bool
-    {
-        return key($this->chain) !== null;
-    }
-
     public function __invoke(): array
     {
         $data = [];
-        foreach ($this->chain as $cert) {
+        foreach ($this->iterable as $cert) {
             $data[] = $cert();
         }
         return $data;
     }
 
-    public function count(): int
-    {
-        return count($this->chain);
-    }
-
     public function export(): array
     {
         $data = [];
-        foreach ($this->chain as $cert) {
+        foreach ($this->iterable as $cert) {
             $data[] = (string) $cert;
         }
         return $data;

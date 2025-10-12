@@ -24,15 +24,26 @@
             "homepage": "https://github.com/JuanchoSL/"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/JuanchoSL/openssl_x509_crl"
+        }
+    ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.2",
         "ext-openssl": "*",
+        "psr/log": "^3.0",
         "juanchosl/exceptions": "1.0.*",
-        "juanchosl/validators": "1.0.*"
+        "juanchosl/validators": "1.0.*",
+        "ukrbublik/openssl_x509_crl": "dev-master",
+        "vakata/asn1": "2.3.*"
     },
     "require-dev": {
         "phpunit/phpunit": "9.6.*",
-        "phpstan/phpstan": "1.12.*"
+        "phpstan/phpstan": "1.12.*",
+        "juanchosl/logger": "^1.1",
+        "juanchosl/requestlistener": "dev-master"
     },
     "autoload": {
         "psr-4": {

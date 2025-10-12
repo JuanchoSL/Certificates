@@ -8,6 +8,7 @@ use JuanchoSL\Certificates\Factories\DnsDkimFactory;
 use JuanchoSL\Certificates\Factories\PublicSshFactory;
 use JuanchoSL\Certificates\Interfaces\Complex\PublicKeyInterface;
 use JuanchoSL\Certificates\Traits\DetailableTrait;
+use JuanchoSL\Certificates\Traits\FingerprintTrait;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Certificates\Traits\StringableTrait;
 use OpenSSLAsymmetricKey;
@@ -16,7 +17,7 @@ use OpenSSLCertificate;
 class PublicKeyContainer implements PublicKeyInterface
 {
 
-    use DetailableTrait, StringableTrait, SaveableTrait;
+    use DetailableTrait, StringableTrait, SaveableTrait, FingerprintTrait;
 
     protected $data = null;
 

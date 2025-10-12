@@ -149,6 +149,10 @@ With PHP, we can [export all certificates](https://www.php.net/manual/es/functio
 PEM PKCS containers is an all in one, multi purpose, with data encoded to base64 ASCII.
 It is a bundle that can includes the entire information package (just like PKCS12 for pkcs12 and pkcs8) but without requiring a password for the entire package. It allows the public part (all pkcs7/pkcs8/pkcs12) to be extracted without specifying it, but still allows the private key (not included for pkcs7) to be encrypted by applying an unique password using the PKCS5 protocol, as recommended by the PKCS standard.
 
+### CRL (Certificate revocation list) Container [OpenSSL-CRL](https://docs.openssl.org/master/man1/openssl-crl/)
+
+A CRL is a list of revoked certificates, with the date and the reason of revocation, signed by the CA and deployed in order to be retrieved and checked by clients, verifying the status of CA signed certificates.
+
 ## Creators
 
 ### PKCS12
@@ -184,7 +188,7 @@ $pkcs8->setMessage($user_data_to_append)->export();
 
 ### PKCS7
 
-Creates a standard PKCS7 container, in order to save all the public credentials signed into an unique repository. The creator check for required files, private key and certificate, check than the .certificate are related and it has been created with the private key.The Private key is required only for sign the bundle, it is not included.
+Creates a standard PKCS7 container, in order to save all the public credentials signed into an unique repository. The creator check for required files, private key and certificate, check than the certificate are related and it has been created with the private key. The Private key is required only for sign the bundle, it is not included.
 
 ```php
 $private = new PrivateKeyContainer($private_file_or_data);
@@ -211,6 +215,46 @@ or save into a selected file
 $pkcs7->save($desired_saving_path);
 ```
 
+### CRL
+
+Creates a standar **certificates revocation list**, in order to put as public for the availability the check the certificates status from clients. The creator check for the required files, private key and certificate from the CA, check than the certificate are related and it has been created with the private key. The Private key is required only for sign the bundle, it is not included.
+The CRL needs to be configured with some value, as date of creation, number of list, and optionally where are the most freshed list on internet and the signature algorithm. Then set the CA private key and certificate for sign the CRL
+
+```php
+$private = new PrivateKeyContainer($private_file_or_data);
+$certificate = new CertificateContainer($certificate_file_or_data);
+
+$crl = new CrlCreator([
+    CrlCreator::CRL_OPTION_DAYS_TO_NEXT => 7,
+    CrlCreator::CRL_OPTION_DISTRIBUTION_FRESH => '',
+    CrlCreator::CRL_OPTION_NUMBER => 1,
+    CrlCreator::CRL_OPTION_SIGN_ALGORITHM => OPENSSL_ALGO_SHA256
+])->setPrivateKey($private)->setCertificate($certificate);
+```
+
+The CrlCreator needs an instance of CrlContainer in order to append the revoked certificates, as all containers it is immutable, then use the CrlFiller (that extends CrlContainer) in order to add certificates to the list, set the revocation date and optionally, the reason, using the RevocationReasonEnum available
+
+```php
+$list = new CrlFiller;
+$list->addRevocation($certificate_intenface, $datetime_interface, $revoked_reason_enum = null);
+```
+
+Then, add the list to the creator and export it
+
+```php
+$crl->setCertificates($list);
+
+//export as DER
+$der_crl = $crl->export();
+
+//export as PEM X509 CRL
+$pem_crl = (string) $crl;
+
+//save as PEM into file
+$crl->save($destination_path);
+
+```
+
 ## Readers and Factories
 
 Using factories, you can instantiate containers from few origins and formats, dellegating to the library the container selection, usefull when you can receive distincts types and avoid the user check and control.
@@ -219,7 +263,7 @@ Using factories, you can instantiate containers from few origins and formats, de
 
 If you can receive data from files or strings and streams, don't needs open and check to select the right container, you can use someone factory that do this work.
 
-> All containers are auto callables except **Pkcs12** or **encrypted primary key**, because its needs a password, the factory try to create a LockedContainer that need to be invoked passing the password por unlock it.
+> All containers are auto callables except **Pkcs12** or **encrypted primary key**, because its needs a password, the factory try to create a LockedContainer that need to be invoked passing the password for unlock it.
 
 Actually you have available:
 
@@ -242,7 +286,7 @@ $container = (new ContainerFactory)->createFromEntity($stream);
 - Detailable -> Have readable details
 - Exportable -> can be exported
 - FingerprintReadable ->have a standard fingerprint calculation accesible
-- Formateable -> have a standar format, extension and mimetype, available por save or download
+- Formateable -> have a standar format, extension and mimetype, available for save or download
 - PasswordProtectable -> Is an element with a password required (Pkcs12)
 - PasswordUnprotectable -> Is an element that can be encrypted with a pasword, and can be removed too
 - PrivateKeyReadable -> Have a private key accesible
@@ -252,21 +296,21 @@ $container = (new ContainerFactory)->createFromEntity($stream);
 - Verifyable -> can be verifyed with other key from other container
 - Stringable -> can be exported as string
 
-|                       | Certificate | Chain | Pkcs12 | Pkcs8 | PEM | Pkcs7 | Priv key | Pub key | Pub SSH |
-| --------------------- | :---------: | :---: | :----: | :---: | :-: | :---: | :------: | :-----: | :-----: |
-| CertificateReadable   |             |       |   X    |   X   |     |   X   |          |         |         |
-| ChainReadable         |             |   X   |   X    |   X   |     |   X   |          |         |         |
-| Detailable            |      X      |       |   X    |       |     |       |    X     |    X    |    X    |
-| Exportable            |      X      |       |        |   X   |     |   X   |    X     |    X    |    X    |
-| FingerprintReadable   |      X      |       |        |       |     |       |          |         |    X    |
-| Formateable           |      X      |       |   X    |   X   |     |   X   |    X     |    X    |    X    |
-| PasswordProtectable   |             |       |   X    |       |     |       |          |         |         |
-| PasswordUnprotectable |             |       |        |       |     |       |    X     |         |         |
-| PrivateKeyReadable    |             |       |   X    |   X   |     |       |          |         |         |
-| PublicKeyReadable     |      X      |       |        |       |     |       |    X     |         |         |
-| Saveable              |      X      |   X   |   X    |   X   |     |   X   |    X     |    X    |    X    |
-| Standarizable         |      X      |       |        |       |     |       |    X     |    X    |         |
-| Verifyable            |      X      |       |        |       |     |       |          |         |         |
-| Stringable            |      X      |   X   |        |       |     |   X   |    X     |    X    |    X    |
-| Countable             |             |   X   |        |       |     |       |          |         |         |
-| Iterable              |             |   X   |        |       |     |       |          |         |         |
+|                       | Certificate | Chain | Pkcs12 | Pkcs8 | PEM | Pkcs7 | Priv key | Pub key | Pub SSH | CRL |
+| --------------------- | :---------: | :---: | :----: | :---: | :-: | :---: | :------: | :-----: | :-----: | :-: |
+| CertificateReadable   |             |       |   X    |   X   |     |   X   |          |         |         |     |
+| ChainReadable         |             |   X   |   X    |   X   |     |   X   |          |         |         |     |
+| Detailable            |      X      |       |   X    |       |     |       |    X     |    X    |    X    |  X  |
+| Exportable            |      X      |       |        |   X   |     |   X   |    X     |    X    |    X    |  X  |
+| FingerprintReadable   |      X      |       |        |       |     |       |          |    X    |    X    |  X  |
+| Formateable           |      X      |       |   X    |   X   |     |   X   |    X     |    X    |    X    |  X  |
+| PasswordProtectable   |             |       |   X    |       |     |       |          |         |         |     |
+| PasswordUnprotectable |             |       |        |       |     |       |    X     |         |         |     |
+| PrivateKeyReadable    |             |       |   X    |   X   |     |       |          |         |         |     |
+| PublicKeyReadable     |      X      |       |        |       |     |       |    X     |         |         |     |
+| Saveable              |      X      |   X   |   X    |   X   |     |   X   |    X     |    X    |    X    |  X  |
+| Standarizable         |      X      |       |        |       |     |       |    X     |    X    |         |     |
+| Verifyable            |      X      |       |        |       |     |       |          |         |         |     |
+| Stringable            |      X      |   X   |        |       |     |   X   |    X     |    X    |    X    |  X  |
+| Countable             |             |   X   |        |       |     |       |          |         |         |  X  |
+| Iterable              |             |   X   |        |       |     |       |          |         |         |  X  |
