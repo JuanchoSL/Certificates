@@ -51,20 +51,28 @@ class CrlContainer implements Iterator, Countable, Stringable, DetailableInterfa
             }
         }
         foreach ($this->certs['tbsCertList']['revokedCertificates'] as $cert) {
-            $reason = isset($cert['extensions'][0]['extnValue'][0]) ? $cert['extensions'][0]['extnValue'][0] : 4;
-            $this->appendConvertedData(intval(hexdec($cert['userCertificate'])), new DateTime(date("Y-m-d H:i:s", $cert['revocationDate'])), RevokeReasonsEnum::tryFrom(X509::getRevokeReasonNameByCode($reason ?? 4)));
+            $reason = null;
+            foreach ($cert['extensions'] as $r_extension) {
+                if ($r_extension['extnID'] == '2.5.29.21') {
+                    $reason = current($r_extension['extnValue']);
+                    $reason = X509::getRevokeReasonNameByCode($reason);
+                    if (!is_null($reason)) {
+                        $reason = RevokeReasonsEnum::tryFrom($reason);
+                    }
+                    break;
+                }
+            }
+            $this->appendConvertedData(intval(hexdec($cert['userCertificate'])), new DateTime(date("Y-m-d H:i:s", $cert['revocationDate'])), $reason);
         }
     }
 
-    protected function appendConvertedData(int $serial, DateTimeInterface $revocation_date, RevokeReasonsEnum $reason): self
+    protected function appendConvertedData(int $serial, DateTimeInterface $revocation_date, ?RevokeReasonsEnum $reason = null): self
     {
-        if (!$this->hasSerial($serial)) {
-            $this->iterable[] = [
-                'cert' => $serial,
-                'rev_date' => $revocation_date,
-                'reason' => $reason
-            ];
-        }
+        $this->iterable[$serial] = [
+            'cert' => $serial,
+            'rev_date' => $revocation_date,
+            'reason' => $reason
+        ];
         return $this;
     }
 
@@ -105,11 +113,16 @@ class CrlContainer implements Iterator, Countable, Stringable, DetailableInterfa
 
     public function hasSerial(int $serial): bool
     {
-        foreach ($this->iterable as $element) {
-            if ($element['cert'] == $serial) {
-                return true;
-            }
-        }
-        return false;
+        return array_key_exists($serial, $this->iterable);
+    }
+
+    public function isRevokedByCert(CertificateInterface $cert): bool
+    {
+        return $this->isRevokedBySerial(intval($cert->getDetail('serialNumber')));
+    }
+
+    public function isRevokedBySerial(int $serial): bool
+    {
+        return ($this->hasSerial($serial) && $this->iterable[$serial]['rev_date']->getTimestamp() <= time());
     }
 }
