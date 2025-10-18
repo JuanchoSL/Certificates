@@ -48,5 +48,8 @@ class CrlTest extends TestCase
         $dir = implode(DIRECTORY_SEPARATOR, [dirname(__FILE__, 3), 'data']);
         $subject = (new CertificateContainer($dir . DIRECTORY_SEPARATOR . "certificates.crt"));
         $this->assertTrue($cert->hasCertificate($subject), "Certificate is included");
+        $this->assertTrue($cert->hasSerial(intval($subject->getDetail('serialNumber'))), "Serial is included");
+        $this->assertTrue($cert->isRevokedByCert($subject), "Certificate is revoked");
+        $this->assertTrue($cert->isRevokedBySerial(intval($subject->getDetail('serialNumber'))), "Serial is revoked");
     }
 }

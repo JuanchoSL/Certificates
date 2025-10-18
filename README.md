@@ -151,7 +151,7 @@ It is a bundle that can includes the entire information package (just like PKCS1
 
 ### CRL (Certificate revocation list) Container [OpenSSL-CRL](https://docs.openssl.org/master/man1/openssl-crl/)
 
-A CRL is a list of revoked certificates, with the date and the reason of revocation, signed by the CA and deployed in order to be retrieved and checked by clients, verifying the status of CA signed certificates.
+A CRL is a list of revoking certificates, with the date and optionally the reason of revocation, signed by the CA and deployed in order to be retrieved and checked by clients, verifying the status of CA signed certificates. The client needs to check the date of revocation, because the CAs can add all emmited cerrtificates in order to have the serials included from issuing, without reason, because the revoking date will be the valid end date
 
 ## Creators
 
@@ -226,6 +226,7 @@ $certificate = new CertificateContainer($certificate_file_or_data);
 
 $crl = new CrlCreator([
     CrlCreator::CRL_OPTION_DAYS_TO_NEXT => 7,
+    CrlCreator::CRL_OPTION_VERSION => 2,
     CrlCreator::CRL_OPTION_DISTRIBUTION_FRESH => '',
     CrlCreator::CRL_OPTION_NUMBER => 1,
     CrlCreator::CRL_OPTION_SIGN_ALGORITHM => OPENSSL_ALGO_SHA256
@@ -236,7 +237,7 @@ The CrlCreator needs an instance of CrlContainer in order to append the revoked 
 
 ```php
 $list = new CrlFiller;
-$list->addRevocation($certificate_intenface, $datetime_interface, $revoked_reason_enum = null);
+$list->addRevocation($certificate_interface, $datetime_interface, $revoked_reason_enum = null);
 ```
 
 Then, add the list to the creator and export it

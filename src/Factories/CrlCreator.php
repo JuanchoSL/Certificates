@@ -8,7 +8,6 @@ use JuanchoSL\Certificates\Interfaces\Complex\CertificateInterface;
 use JuanchoSL\Certificates\Interfaces\Complex\PrivateKeyInterface;
 use JuanchoSL\Certificates\Interfaces\SaveableInterface;
 use JuanchoSL\Certificates\Repositories\CrlContainer;
-use JuanchoSL\Certificates\Repositories\RevokedCertsContainer;
 use JuanchoSL\Certificates\Traits\SaveableTrait;
 use JuanchoSL\Exceptions\PreconditionFailedException;
 use JuanchoSL\Exceptions\PreconditionRequiredException;
@@ -28,12 +27,14 @@ class CrlCreator implements Stringable, SaveableInterface
     protected ?int $days_next_crl = null;
 
     protected iterable $options = [
+        self::CRL_OPTION_VERSION => 2,
         self::CRL_OPTION_DAYS_TO_NEXT => 7,
         self::CRL_OPTION_DISTRIBUTION_FRESH => '',
         self::CRL_OPTION_NUMBER => 1,
         self::CRL_OPTION_SIGN_ALGORITHM => OPENSSL_ALGO_SHA256
     ];
 
+    const CRL_OPTION_VERSION = 'version';
     const CRL_OPTION_NUMBER = 'crl_number';
     const CRL_OPTION_DAYS_TO_NEXT = 'days_next_crl';
     const CRL_OPTION_DISTRIBUTION_FRESH = 'freshest_crl';
@@ -77,7 +78,7 @@ class CrlCreator implements Stringable, SaveableInterface
         }
         $ci = [
             'no' => $this->options[self::CRL_OPTION_NUMBER],
-            'version' => 2,
+            'version' => $this->options[self::CRL_OPTION_VERSION],
             'alg' => $this->options[self::CRL_OPTION_SIGN_ALGORITHM],
             'revoked' => []
         ];
@@ -90,7 +91,7 @@ class CrlCreator implements Stringable, SaveableInterface
         if (!empty($this->revoked_certs) && $this->revoked_certs->count() > 0) {
             foreach ($this->revoked_certs as $revoked_cert) {
                 $temp = array(
-                    'serial' => intval((is_string($revoked_cert['cert'])) ? hexdec($revoked_cert['cert']) : $revoked_cert['cert']->getDetail('serialNumber')),
+                    'serial' => (is_numeric($revoked_cert['cert'])) ? $revoked_cert['cert'] : (intval((is_string($revoked_cert['cert'])) ? hexdec($revoked_cert['cert']) : $revoked_cert['cert']->getDetail('serialNumber'))),
                     'rev_date' => intval($revoked_cert['rev_date']->getTimestamp()),
                     'compr_date' => strtotime("-1 day"),
                     'reason' => intval(X509::getRevokeReasonCodeByName(($revoked_cert['reason'] == RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED) ? null : $revoked_cert['reason']->value)),
