@@ -94,7 +94,7 @@ class CrlCreator implements Stringable, SaveableInterface
                     'serial' => (is_numeric($revoked_cert['cert'])) ? $revoked_cert['cert'] : (intval((is_string($revoked_cert['cert'])) ? hexdec($revoked_cert['cert']) : $revoked_cert['cert']->getDetail('serialNumber'))),
                     'rev_date' => intval($revoked_cert['rev_date']->getTimestamp()),
                     'compr_date' => strtotime("-1 day"),
-                    'reason' => intval(X509::getRevokeReasonCodeByName(($revoked_cert['reason'] == RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED) ? null : $revoked_cert['reason']->value)),
+                    'reason' => intval(X509::getRevokeReasonCodeByName(($revoked_cert['reason'] == RevokeReasonsEnum::REVOKE_REASON_UNESPECIFIED) ? null : $revoked_cert['reason']?->value)),
                     'hold_instr' => null
                 );
 

@@ -45,24 +45,32 @@ class CrlContainer implements Iterator, Countable, Stringable, DetailableInterfa
         }
         $this->data = $cert_content;
         $this->certs = CRL::fromString($cert_content)->toArray();//['tbsCertList']['revokedCertificates'];
-        foreach ($this->certs['tbsCertList']['extensions'] as $extension) {
-            if ($extension['extnID'] == '2.5.29.20') {
-                $this->number = bindec(current($extension['extnValue']));
-            }
-        }
-        foreach ($this->certs['tbsCertList']['revokedCertificates'] as $cert) {
-            $reason = null;
-            foreach ($cert['extensions'] as $r_extension) {
-                if ($r_extension['extnID'] == '2.5.29.21') {
-                    $reason = current($r_extension['extnValue']);
-                    $reason = X509::getRevokeReasonNameByCode($reason);
-                    if (!is_null($reason)) {
-                        $reason = RevokeReasonsEnum::tryFrom($reason);
+        if (array_key_exists("tbsCertList", $this->certs)) {
+            if (array_key_exists("extensions", $this->certs['tbsCertList'])) {
+                foreach ($this->certs['tbsCertList']['extensions'] as $extension) {
+                    if ($extension['extnID'] == '2.5.29.20') {
+                        $this->number = bindec(current($extension['extnValue']));
                     }
-                    break;
                 }
             }
-            $this->appendConvertedData(intval(hexdec($cert['userCertificate'])), new DateTime(date("Y-m-d H:i:s", $cert['revocationDate'])), $reason);
+            if (array_key_exists("revokedCertificates", $this->certs['tbsCertList'])) {
+                foreach ($this->certs['tbsCertList']['revokedCertificates'] as $cert) {
+                    $reason = null;
+                    if (array_key_exists("extensions", $cert)) {
+                        foreach ($cert['extensions'] as $r_extension) {
+                            if ($r_extension['extnID'] == '2.5.29.21') {
+                                $reason = current($r_extension['extnValue']);
+                                $reason = X509::getRevokeReasonNameByCode($reason);
+                                if (!is_null($reason)) {
+                                    $reason = RevokeReasonsEnum::tryFrom($reason);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    $this->appendConvertedData(intval(hexdec($cert['userCertificate'])), new DateTime(date("Y-m-d H:i:s", $cert['revocationDate'])), $reason);
+                }
+            }
         }
     }
 
